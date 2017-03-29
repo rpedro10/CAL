@@ -1,15 +1,16 @@
-#ifndef TRUCK_H_
-#define TRUCK_H_
+#ifndef BIN_H_
+#define BIN_H_
 #include <string>
 using namespace std;
 
-class Truck{
+class Bin{
 	int id;
 	string type;
 	int capacity;
+	bool full;
 
 public:
-	Truck(int id,string type, int capacity);
+	Bin(int id,string type, int capacity);
 
 	int getId();
 
@@ -17,6 +18,7 @@ public:
 
 	int getCapacity();
 
+	bool isFull();
 };
 
 #endif

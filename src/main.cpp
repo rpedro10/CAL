@@ -45,7 +45,7 @@ void readNodes(char filename) {
 		getline(linestream, data, ';');
 		linestream >> pointY;
 
-		//cout << "id: " << id << " x1: " << coordX << " y1: " << coordY << " x2: " << pointX << " y2: " << pointY << endl;
+		cout << "id: " << id << " x1: " << coordX << " y1: " << coordY << " x2: " << pointX << " y2: " << pointY << endl;
 	}
 
 	inFile.close();
