@@ -1,0 +1,5 @@
+1;geral;5;t
+2;geral;8;t
+3;geral;4;f
+4;geral;15;t
+5;geral;8;f

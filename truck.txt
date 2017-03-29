@@ -1,0 +1,3 @@
+1;geral;50
+2;geral;25
+3;geral;45
