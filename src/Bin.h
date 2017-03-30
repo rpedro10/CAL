@@ -6,7 +6,6 @@ using namespace std;
 class Bin{
 	int id;
 	string type;
-	int capacity;
 	bool full;
 
 public:
@@ -15,8 +14,6 @@ public:
 	int getId();
 
 	string getType();
-
-	int getCapacity();
 
 	bool isFull();
 };

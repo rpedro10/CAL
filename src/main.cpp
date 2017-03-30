@@ -10,7 +10,7 @@
 Graph<NodeInf> graph;
 
 using namespace std;
-/*vector<Vertex<NodeInf>*>*/
+
 void readNodes(char filename) {
 
 	ifstream inFile;

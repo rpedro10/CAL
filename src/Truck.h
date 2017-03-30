@@ -6,7 +6,7 @@ using namespace std;
 class Truck{
 	int id;
 	string type;
-	int capacity;
+	//int capacity;
 
 public:
 	Truck(int id,string type, int capacity);
@@ -15,7 +15,6 @@ public:
 
 	string getType();
 
-	int getCapacity();
 
 };
 
