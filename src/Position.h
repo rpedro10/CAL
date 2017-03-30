@@ -3,23 +3,18 @@
 #include <string>
 using namespace std;
 
-class DegPos{
-	long longitude,latitude;
+class Position{
+	double longitude,latitude;
 
 public:
-	DegPos(long longitude, long latitude);
-	long getLongitude(){return longitude;};
-	long getLatitude(){return latitude;};
+	Position(double longitude, double latitude){
+		this->longitude=longitude;
+		this->latitude =latitude;
+	};
+	Position(){};
+
+	double getLongitude(){return longitude;};
+	double getLatitude(){return latitude;};
 };
-
-class RadPos{
-	long longitude,latitude;
-
-public:
-	RadPos(long longitude, long latitude);
-	long getLongitude(){return longitude;};
-	long getLatitude(){return latitude;};
-};
-
 
 #endif

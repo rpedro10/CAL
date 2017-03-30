@@ -48,8 +48,10 @@ public:
 	int getDist() const;
 	int getIndegree() const;
 
+
 	Vertex* path;
 };
+
 
 
 template <class T>
@@ -364,7 +366,10 @@ int Graph<T>::maxNewChildren(Vertex<T> *v, T &inf) const {
 template <class T>
 Vertex<T>* Graph<T>::getVertex(const T &v) const {
 	for(unsigned int i = 0; i < vertexSet.size(); i++)
-		if (vertexSet[i]->info == v) return vertexSet[i];
+		if (vertexSet[i]->info == v)
+			{
+			return vertexSet[i];
+			}
 	return NULL;
 }
 
