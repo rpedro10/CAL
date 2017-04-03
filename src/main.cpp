@@ -2,12 +2,14 @@
 #include "NodeInf.h"
 #include "Position.h"
 #include "Road.h"
+#include "graphviewer.h"
 
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
 
 Graph<NodeInf> graph;
+
 
 using namespace std;
 
@@ -34,7 +36,7 @@ void readNodes(char filename) {
 		string data;
 
 		++nLine;
-		cout << "Linha número:" << nLine << endl;
+		//cout << "Linha número:" << nLine << endl;
 
 		linestream >> id;
 
@@ -50,8 +52,8 @@ void readNodes(char filename) {
 		getline(linestream, data, ';');
 		linestream >> pointY;
 
-		cout << "id: " << id << " x1: " << coordX << " y1: " << coordY
-				<< " x2: " << pointX << " y2: " << pointY << endl;
+		//cout << "id: " << id << " x1: " << coordX << " y1: " << coordY
+				//<< " x2: " << pointX << " y2: " << pointY << endl;
 
 		Position pos(pointX, pointY);
 
@@ -60,7 +62,7 @@ void readNodes(char filename) {
 
 		graph.addVertex(nn);
 
-		cout<<"--" <<graph.getVertex(nn)->getInfo().getCoordinate().getLatitude();
+		//cout<<"--" <<graph.getVertex(nn)->getInfo().getCoordinate().getLatitude();
 	}
 
 	inFile.close();
@@ -80,16 +82,14 @@ vector<Road> readStreets(char filename) {
 	}
 
 	string line;
-
-	long long id = 0;
 	string name;
-	bool both;
+
 
 	while (getline(inFile, line)) {
 
-		string optStr = line.substr(0, line.find(";") - 1);
+		string optStr = line.substr(0, line.find(";"));
 
-		long id = atoi(optStr.c_str());
+		long int id = atoi(optStr.c_str());
 
 		line = line.substr(line.find(";") + 1, string::npos);
 		string nome = line.substr(0, line.find(";"));						//
@@ -97,8 +97,8 @@ vector<Road> readStreets(char filename) {
 		line = line.substr(line.find(";") + 1, string::npos);
 		string both = line.substr(0, line.find(";") - 1);					//
 
-		cout << "id: " << optStr << " name:" << nome << " both:" << both
-				<< endl;
+		/*cout << "id: " << id << " name:" << nome << " both:" << both
+				<< endl;*/
 		bool both_ways;
 
 		if (both == "False")
@@ -106,7 +106,7 @@ vector<Road> readStreets(char filename) {
 		else
 			both_ways = true;
 
-		Road rr(id, name, both_ways);
+		Road rr(id, nome, both_ways);
 
 		roads.push_back(rr);
 	}
@@ -134,6 +134,9 @@ void readEdges(char filename) {
 
 	long int source_id, dest_id;
 
+	vector<Road>rr = readStreets('nda');
+
+	int check = 0;
 	while (getline(inFile, line)) {
 
 		stringstream linestream(line);
@@ -147,21 +150,21 @@ void readEdges(char filename) {
 		getline(linestream, data, ';');
 		linestream >> dest_id;
 
-		cout << "id: " << street_id << " source: " << source_id << " destiny: "
-				<< dest_id << endl;
+		//cout << "id: " << street_id <<endl; //<< " source: " << source_id << " destiny: "
+				//<< dest_id << endl;
 
 		Vertex<NodeInf>* node1;
 		Vertex<NodeInf>* node2;
 
 		NodeInf nn(source_id);
 		NodeInf dd(dest_id);
-		cout<<"--"<<endl;
+		//cout<<"--"<<endl;
 
 		node1 = graph.getVertex(nn);
 		node2 = graph.getVertex(dd);
-		cout << node1->getInfo().getId();
-		if(graph.getVertex(nn) == NULL)
-			cout<<"nulll"<<endl;
+		//cout << node1->getInfo().getId();
+		/*if(graph.getVertex(nn) == NULL)
+			cout<<"nulll"<<endl;*/
 
 		// calcular distancia (peso)
 		//cout<<node1->getInfo().getId()<<endl;
@@ -172,7 +175,7 @@ void readEdges(char filename) {
 		double long2 = node2->getInfo().getCoordinate().getLongitude();
 		double lat1 = node1->getInfo().getCoordinate().getLatitude();
 		double lat2 = node2->getInfo().getCoordinate().getLatitude();
-		cout<<"--"<< lat2<<endl;
+		//cout<<"--"<< lat2<<endl;
 
 
 		double u = sin((lat2 - lat1) / 2);
@@ -181,7 +184,20 @@ void readEdges(char filename) {
 		double res = 2.0 * 6371.0* asin(sqrt(u * u + cos(lat1) * cos(lat2) * v * v));
 
 		node1->addEdge(node2, res);
-	cout << res << endl;
+
+
+		for (unsigned int i = 0; i < rr.size(); i++)
+		{
+			//cout << rr[i].getId()<<endl;
+			//cout << street_id<<endl;
+			if ( ( rr[i].getId() == street_id ) && (rr[i].isBothWays() == true))
+			{
+				check++;
+				node2->addEdge(node1, res);
+			}
+		}
+
+		//cout << res << endl;
 
 	}
 
@@ -193,8 +209,9 @@ int main() {
 
 	//vector<Road>rr = readStreets('nda');
 	readNodes('nada');
-	cout<<"pla"<<endl;
-	cout<<"----"<<graph.getVertexSet()[0]->getInfo().getId();
-readEdges('na');
+	//cout << "pla" << endl;
+	//cout << "----" << graph.getVertexSet()[0]->getInfo().getId();
+	readEdges('na');
+
 	return 0;
 }

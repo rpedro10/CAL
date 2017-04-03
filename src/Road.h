@@ -14,14 +14,14 @@ using namespace std;
 
 class Road{
 
-	long id;
+	long int id;
 	string name;
 	bool both_ways;
 
 
 
 public:
-	Road(long _id,string _name,bool b_ways){
+	Road(long int _id,string _name,bool b_ways){
 		this->id=_id;
 		this->name=_name;
 		this->both_ways=b_ways;
@@ -35,11 +35,11 @@ public:
 		both_ways = bothWays;
 	}
 
-	long getId() const {
+	long int getId() const {
 		return id;
 	}
 
-	void setId(long id) {
+	void setId(long int id) {
 		this->id = id;
 	}
 
