@@ -13,7 +13,7 @@ Graph<NodeInf> graph;
 
 using namespace std;
 
-void readNodes(char filename) {
+void readNodes() {
 
 	ifstream inFile;
 
@@ -27,7 +27,7 @@ void readNodes(char filename) {
 
 	string line;
 
-	 long int  id = 0;
+	 long long  id = 0;
 	double coordX, coordY, pointX, pointY;
 	int nLine = 0;
 	while (getline(inFile, line)) {
@@ -68,7 +68,7 @@ void readNodes(char filename) {
 	inFile.close();
 
 }
-vector<Road> readStreets(char filename) {
+vector<Road> readStreets() {
 
 	ifstream inFile;
 	vector<Road> roads;
@@ -89,7 +89,7 @@ vector<Road> readStreets(char filename) {
 
 		string optStr = line.substr(0, line.find(";"));
 
-		long int id = atoi(optStr.c_str());
+		long long id = atoi(optStr.c_str());
 
 		line = line.substr(line.find(";") + 1, string::npos);
 		string nome = line.substr(0, line.find(";"));						//
@@ -116,7 +116,7 @@ vector<Road> readStreets(char filename) {
 
 }
 
-void readEdges(char filename) {
+void readEdges() {
 
 	ifstream inFile;
 
@@ -130,11 +130,11 @@ void readEdges(char filename) {
 
 	string line;
 
-	long int street_id;
+	long long street_id;
 
-	long int source_id, dest_id;
+	long long source_id, dest_id;
 
-	vector<Road>rr = readStreets('nda');
+	vector<Road>rr = readStreets();
 
 	int check = 0;
 	while (getline(inFile, line)) {
@@ -205,13 +205,87 @@ void readEdges(char filename) {
 
 }
 
+void readBins() {
+	ifstream inFile;
+
+	//Ler o ficheiro nos.txt
+	inFile.open("bin.txt");
+
+	if (!inFile) {
+		cerr << "Unable to open file node.txt";
+		exit(1);   // call system to stop
+	}
+
+	string line;
+
+	bool full_bin;
+	string type;
+	long long node_id;
+
+	while (getline(inFile, line)) {
+
+		string optStr = line.substr(0, line.find(";"));
+
+		node_id = atoi(optStr.c_str());
+
+		line = line.substr(line.find(";") + 1, string::npos);
+		type = line.substr(0, line.find(";"));
+
+		line = line.substr(line.find(";") + 1, string::npos);
+		string full = line.substr(0, line.find(";") - 1);
+
+		//cout << "node_id: " << node_id << " type:" << type << " full:" << full << endl;
+
+		if (full == "False")
+			full_bin = false;
+		else
+			full_bin = true;
+
+
+		for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
+
+			NodeInf n = graph.getVertexSet()[i]->getInfo();
+			if (graph.getVertexSet()[i]->getInfo().getId() == node_id)
+			{
+				cout << "ID found." << endl;
+
+				Vertex<NodeInf>* node1;
+				NodeInf nn(n.getId());
+				node1 = graph.getVertex(nn);
+				node1->getInfo().setContentor(true);
+
+				if (graph.getVertexSet()[i]->getInfo().isContentor() == true)
+					cout << "Contentor added." << endl;
+				if (full_bin == true)
+					n.setFull(true);
+
+			}
+		}
+
+	}
+	inFile.close();
+
+}
+
 int main() {
 
-	//vector<Road>rr = readStreets('nda');
-	readNodes('nada');
+	//vector<Road>rr = readStreets();
+	readNodes();
 	//cout << "pla" << endl;
 	//cout << "----" << graph.getVertexSet()[0]->getInfo().getId();
-	readEdges('na');
+	readEdges();
+	readBins();
+
+	for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
+		NodeInf n = graph.getVertexSet()[i]->getInfo();
+		//cout << n.getId() << endl;
+		if (n.isContentor() == true)
+		{
+			cout << "ID of full bin" << n.getId() << endl;
+			if (n.isFull() == true)
+				cout << "ID of full bin" << n.getId() << endl;
+		}
+	}
 
 	return 0;
 }

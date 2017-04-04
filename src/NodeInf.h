@@ -6,7 +6,7 @@ using namespace std;
 
 class NodeInf{
 
-	long int  id;
+	long long  id;
 	Position coordinate ;
 
 	bool contentor;
@@ -15,7 +15,7 @@ class NodeInf{
 
 
 public:
-	NodeInf(long int id,Position coordinates){
+	NodeInf(long long id,Position coordinates){
 		this->id=id;
 		this->coordinate=coordinates;
 		this->capacity=0;
@@ -24,7 +24,7 @@ public:
 
 
 	};
-	NodeInf(long int id){
+	NodeInf(long long id){
 			this->id=id;
 		};
 
@@ -32,7 +32,7 @@ public:
 		return nf1.id==id;
 	}
 
-	long getId(){return id;};
+	long long getId(){return id;};
 
 	Position getCoordinate(){return coordinate;};
 
