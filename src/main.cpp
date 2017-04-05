@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
+#include <string.h>
 
 Graph<NodeInf> graph;
 
@@ -97,7 +98,7 @@ void readNodes() {
 
 		Position pos(pointX, pointY);
 
-		for (int i = 0; i < existingBins.size();i++){
+		for (unsigned int i = 0; i < existingBins.size();i++){
 			if (existingBins[i].getId() == id)
 				isBin = true;
 		}
@@ -231,10 +232,10 @@ void readEdges() {
 
 	//	if(res==0.0)
 	//	res+=0.0001;
-		res*=100;
+
 
 		if(node2->getInfo().isContentor())
-			res= res/100;
+			res= res/100000;
 
 		node1->addEdge(node2, res);
 
@@ -268,27 +269,21 @@ int main() {
 	//cout << "pla" << endl;
 	//cout << "----" << graph.getVertexSet()[0]->getInfo().getId();
 	readEdges();
+	vector<Bin> lixo = readBins();
 
-/**
+
 	for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
-
-		//cout << n.getId() << endl;
-		if (n.isContentor() == true)
-		{
-			cout << "ID of bin: " << n.getId() << endl;
-		}
-
 
 		for(unsigned int j=0;j<graph.getVertexSet()[i]->getAdj().size();j++)
 			cout<<graph.getVertexSet()[i]->getAdj()[j].getWeight()<<endl;
 
-	}*/
+	}
 
 	//25504120
 
-		graph.dijkstraShortestPath(graph.getVertexSet()[0]->getInfo());
+	graph.dijkstraShortestPath(graph.getVertexSet()[5210]->getInfo());
 
-	vector<NodeInf>v = graph.getPath(graph.getVertexSet()[0]->getInfo(),graph.getVertexSet()[2]->getInfo());
+	vector<NodeInf>v = graph.getPath(graph.getVertexSet()[5210]->getInfo(),graph.getVertexSet()[5296]->getInfo());
 
 
 
@@ -296,12 +291,101 @@ int main() {
 	for(int i=0;i<v.size();i++){
 		cout<<v[i].getId()<<endl;
 	}
-/**
-	for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
-		cout<<"    "<<endl;
-			if(graph.getVertexSet()[i]->path == NULL)
-				cout<<"nulo";
-			}
+
+	GraphViewer *gv = new GraphViewer(600, 600, false);
+	gv->createWindow(600, 600);
+	gv->defineEdgeColor("blue");
+	gv->defineVertexColor("yellow");
+	double minLat = 9999;
+	double minLon = 9999;
+	double maxLat = -9999;
+	double maxLon = -9999;
+	//y is latitude
+	//x is longitude
+
+	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
+		double nodeLat =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
+		double nodeLon =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
+		//cout << " |nodelat" << nodeLat << " |nodeLon" << nodeLon << endl;
+		if (nodeLat < minLat)
+			minLat = nodeLat;
+		if (nodeLat > maxLat)
+			maxLat = nodeLat;
+		if (nodeLon < minLon)
+			minLon = nodeLon;
+		if (nodeLat > maxLon)
+			maxLon = nodeLat;
+	}
+
+	//cout << " |minlat" << minLat << " |maxlat" << maxLat << " |minlon" << minLon<< " |maxlon" << minLon << endl;
+
+	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
+		double lat = graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
+		double lon = graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
+		int x,y;
+		x = floor(((lon-minLon)*4200/(maxLon-minLon)));
+		y = floor(((lat-minLat)*3183/(maxLat-minLat)));
+
+		gv->addNode(graph.getVertexSet()[i]->getInfo().getId(),x,y);
+		long long idPrint = graph.getVertexSet()[i]->getInfo().getId();
+		stringstream idV;
+		idV << idPrint;
+		gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(), idV.str());
+	}
+	/*
+	struct foo{
+		int
+
+	};*/
+	int edgeID = 0;
+	int k = 1;
+	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
+		for (unsigned int j = 0; j < graph.getVertexSet()[i]->getAdj().size();
+				j++) {
+			gv->addEdge(edgeID, graph.getVertexSet()[i]->getInfo().getId(),
+					graph.getVertexSet()[i]->getAdj()[j].getDest()->getInfo().getId(),
+					EdgeType::UNDIRECTED);
+			edgeID++;
+			//add road names, not advised.
+			//gv->setEdgeLabel(k, graph->vertexSet[i]->adj[j]->getRoad()->getName());
+			k++;
+		}
+	}
+
+	for (unsigned int i = 0; i < v.size(); i++)
+	{
+		gv->setVertexColor(v[i].getId(), RED);
+/*
+		Vertex<NodeInf>* node1;
+		NodeInf nn(v[i].getId());
+		node1 = graph.getVertex(nn);
+
+		for (int i = 0; i < edgeID;i++)
+		{
+			gv->setEdgeColor(path[i]->adj[k]->getEdgeID(), RED);
+		}
 */
+	}
+
+	/*
+	for (unsigned int i = 0; i < lixo.size(); i++) {
+
+		gv->setVertexColor(lixo[i].getId(), GREEN);
+	}*/
+
+
+	gv->rearrange();
+	cin.get();
+
+	/**
+	 for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
+	 cout<<"    "<<endl;
+	 if(graph.getVertexSet()[i]->path == NULL)
+	 cout<<"nulo";
+	 }
+	 */
+
 	return 0;
 }

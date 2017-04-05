@@ -134,6 +134,7 @@ public:
 	friend class Vertex<T>;
 	double getWeight();
 	void setWeight(double new_weight);
+	Vertex<T> * getDest();
 };
 
 template <class T>
@@ -143,6 +144,13 @@ template <class T>
 double Edge<T>::getWeight(){
 	return weight;
 }
+
+template <class T>
+Vertex<T> * Edge<T>::getDest(){
+	return dest;
+}
+
+
 
 template <class T>
 void Edge<T>::setWeight(double new_weight){
