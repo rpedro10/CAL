@@ -37,7 +37,7 @@ public:
 
 	Vertex(T in);
 	friend class Graph<T>;
-
+	vector<Edge<T>> getAdj();
 	void addEdge(Vertex<T> *dest, double w);
 	bool removeEdgeTo(Vertex<T> *d);
 
@@ -50,6 +50,7 @@ public:
 	bool operator<(const Vertex<T> vertex);
 
 	Vertex* path;
+
 };
 
 
@@ -59,6 +60,11 @@ struct vertex_greater_than {
         return a->getDist() > b->getDist();
     }
 };
+
+template <class T>
+vector<Edge<T>> Vertex<T>::getAdj(){
+	return adj;
+}
 
 
 template <class T>
@@ -126,11 +132,22 @@ public:
 	Edge(Vertex<T> *d, double w);
 	friend class Graph<T>;
 	friend class Vertex<T>;
+	double getWeight();
+	void setWeight(double new_weight);
 };
 
 template <class T>
 Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w){}
 
+template <class T>
+double Edge<T>::getWeight(){
+	return weight;
+}
+
+template <class T>
+void Edge<T>::setWeight(double new_weight){
+	this->weight=new_weight;
+}
 
 
 

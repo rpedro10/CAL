@@ -212,6 +212,9 @@ void readEdges() {
 		// calcular distancia (peso)
 		//cout<<node1->getInfo().getId()<<endl;
 
+
+
+
 		double long1 = node1->getInfo().getCoordinate().getLongitude();
 
 
@@ -226,7 +229,15 @@ void readEdges() {
 
 		double res = 2.0 * 6371.0* asin(sqrt(u * u + cos(lat1) * cos(lat2) * v * v));
 
+	//	if(res==0.0)
+	//	res+=0.0001;
+		res*=100;
+
+		if(node2->getInfo().isContentor())
+			res= res/100;
+
 		node1->addEdge(node2, res);
+
 
 
 		for (unsigned int i = 0; i < rr.size(); i++)
@@ -239,6 +250,7 @@ void readEdges() {
 				node2->addEdge(node1, res);
 			}
 		}
+
 
 		//cout << res << endl;
 
@@ -257,15 +269,39 @@ int main() {
 	//cout << "----" << graph.getVertexSet()[0]->getInfo().getId();
 	readEdges();
 
-
+/**
 	for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
-		NodeInf n = graph.getVertexSet()[i]->getInfo();
+
 		//cout << n.getId() << endl;
 		if (n.isContentor() == true)
 		{
 			cout << "ID of bin: " << n.getId() << endl;
 		}
-	}
 
+
+		for(unsigned int j=0;j<graph.getVertexSet()[i]->getAdj().size();j++)
+			cout<<graph.getVertexSet()[i]->getAdj()[j].getWeight()<<endl;
+
+	}*/
+
+	//25504120
+
+		graph.dijkstraShortestPath(graph.getVertexSet()[0]->getInfo());
+
+	vector<NodeInf>v = graph.getPath(graph.getVertexSet()[0]->getInfo(),graph.getVertexSet()[2]->getInfo());
+
+
+
+	cout<<v.size()<<endl;
+	for(int i=0;i<v.size();i++){
+		cout<<v[i].getId()<<endl;
+	}
+/**
+	for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
+		cout<<"    "<<endl;
+			if(graph.getVertexSet()[i]->path == NULL)
+				cout<<"nulo";
+			}
+*/
 	return 0;
 }

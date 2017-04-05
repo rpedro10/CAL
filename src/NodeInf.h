@@ -25,6 +25,9 @@ public:
 	 bool operator== (const NodeInf &nf1)const{
 		return nf1.id==id;
 	}
+	 bool operator!= (const NodeInf &nf1)const{
+			return nf1.id!=id;
+		}
 
 	long long getId(){return id;};
 
