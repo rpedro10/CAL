@@ -8,20 +8,14 @@ class NodeInf{
 
 	long long  id;
 	Position coordinate ;
-
 	bool contentor;
-	bool full;
-	int capacity;
 
 
 public:
-	NodeInf(long long id,Position coordinates){
+	NodeInf(long long id,Position coordinates, bool bin){
 		this->id=id;
 		this->coordinate=coordinates;
-		this->capacity=0;
-		this->contentor=false;
-		this->full=false;
-
+		this->contentor=bin;
 
 	};
 	NodeInf(long long id){
@@ -36,30 +30,12 @@ public:
 
 	Position getCoordinate(){return coordinate;};
 
-
-
-	int getCapacity() const {
-		return capacity;
-	};
-
-	void setCapacity(int capacity) {
-		this->capacity = capacity;
-	};
-
 	bool isContentor() const {
 		return contentor;
 	};
 
 	void setContentor(bool contentor) {
 		this->contentor = contentor;
-	};
-
-	bool isFull() const {
-		return full;
-	};
-
-	void setFull(bool full) {
-		this->full = full;
 	};
 
 

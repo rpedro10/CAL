@@ -3,6 +3,7 @@
 #include "Position.h"
 #include "Road.h"
 #include "graphviewer.h"
+#include "Bin.h"
 
 #include <fstream>
 #include <sstream>
@@ -12,6 +13,43 @@ Graph<NodeInf> graph;
 
 
 using namespace std;
+
+
+vector<Bin> readBins() {
+	ifstream inFile;
+
+	//Ler o ficheiro nos.txt
+	inFile.open("bin.txt");
+
+	if (!inFile) {
+		cerr << "Unable to open file node.txt";
+		exit(1);   // call system to stop
+	}
+
+	string line;
+	string type;
+	vector<Bin> contentor;
+	long long node_id;
+
+	while (getline(inFile, line)) {
+
+		string optStr = line.substr(0, line.find(";"));
+
+		node_id = atoi(optStr.c_str());
+
+		line = line.substr(line.find(";") + 1, string::npos);
+		type = line.substr(0, line.find(";"));
+
+
+		cout << "node_id: " << node_id << " type:" << type <<endl;
+		Bin newBin = Bin(node_id,type);
+		contentor.push_back(newBin);
+	}
+	inFile.close();
+
+	return contentor;
+
+}
 
 void readNodes() {
 
@@ -26,14 +64,16 @@ void readNodes() {
 	}
 
 	string line;
-
-	 long long  id = 0;
+	long long  id = 0;
 	double coordX, coordY, pointX, pointY;
 	int nLine = 0;
+	vector<Bin> existingBins = readBins();
+
 	while (getline(inFile, line)) {
 
 		stringstream linestream(line);
 		string data;
+		bool isBin = false;
 
 		++nLine;
 		//cout << "Linha número:" << nLine << endl;
@@ -57,8 +97,11 @@ void readNodes() {
 
 		Position pos(pointX, pointY);
 
-		NodeInf nn(id, pos);
-
+		for (int i = 0; i < existingBins.size();i++){
+			if (existingBins[i].getId() == id)
+				isBin = true;
+		}
+		NodeInf nn(id, pos, isBin);
 
 		graph.addVertex(nn);
 
@@ -205,67 +248,6 @@ void readEdges() {
 
 }
 
-void readBins() {
-	ifstream inFile;
-
-	//Ler o ficheiro nos.txt
-	inFile.open("bin.txt");
-
-	if (!inFile) {
-		cerr << "Unable to open file node.txt";
-		exit(1);   // call system to stop
-	}
-
-	string line;
-
-	bool full_bin;
-	string type;
-	long long node_id;
-
-	while (getline(inFile, line)) {
-
-		string optStr = line.substr(0, line.find(";"));
-
-		node_id = atoi(optStr.c_str());
-
-		line = line.substr(line.find(";") + 1, string::npos);
-		type = line.substr(0, line.find(";"));
-
-		line = line.substr(line.find(";") + 1, string::npos);
-		string full = line.substr(0, line.find(";") - 1);
-
-		//cout << "node_id: " << node_id << " type:" << type << " full:" << full << endl;
-
-		if (full == "False")
-			full_bin = false;
-		else
-			full_bin = true;
-
-
-		for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
-
-			NodeInf n = graph.getVertexSet()[i]->getInfo();
-			if (graph.getVertexSet()[i]->getInfo().getId() == node_id)
-			{
-				cout << "ID found." << endl;
-
-				Vertex<NodeInf>* node1;
-				NodeInf nn(n.getId());
-				node1 = graph.getVertex(nn);
-				node1->getInfo().setContentor(true);
-
-				if (graph.getVertexSet()[i]->getInfo().isContentor() == true)
-					cout << "Contentor added." << endl;
-				if (full_bin == true)
-					n.setFull(true);
-
-			}
-		}
-
-	}
-	inFile.close();
-
-}
 
 int main() {
 
@@ -274,16 +256,14 @@ int main() {
 	//cout << "pla" << endl;
 	//cout << "----" << graph.getVertexSet()[0]->getInfo().getId();
 	readEdges();
-	readBins();
+
 
 	for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
 		NodeInf n = graph.getVertexSet()[i]->getInfo();
 		//cout << n.getId() << endl;
 		if (n.isContentor() == true)
 		{
-			cout << "ID of full bin" << n.getId() << endl;
-			if (n.isFull() == true)
-				cout << "ID of full bin" << n.getId() << endl;
+			cout << "ID of bin: " << n.getId() << endl;
 		}
 	}
 

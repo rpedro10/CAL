@@ -1,5 +1,5 @@
-25504178;geral;true
-1670426639;geral;true
-1670426704;geral;true
-1670512002;geral;true
-1918767098;geral;true
+25504178;geral;
+1670426639;geral;
+1670426704;geral;
+1670512002;geral;
+1918767098;geral;

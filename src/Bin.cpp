@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Bin::Bin(int id,string type,int capacity){
+Bin::Bin(int id,string type){
 	this->id = id;
 	this->type = type;
 }
@@ -13,10 +13,4 @@ int Bin::getId(){
 
 string Bin::getType(){
 	return type;
-}
-
-
-
-bool Bin::isFull(){
-	return full;
 }

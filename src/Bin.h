@@ -6,16 +6,14 @@ using namespace std;
 class Bin{
 	int id;
 	string type;
-	bool full;
 
 public:
-	Bin(int id,string type, int capacity);
+	Bin(int id,string type);
 
 	int getId();
 
 	string getType();
 
-	bool isFull();
 };
 
 #endif
