@@ -57,7 +57,7 @@ void readNodes() {
 	ifstream inFile;
 
 	//Ler o ficheiro nos.txt
-	inFile.open("node.txt");
+	inFile.open("pp1.txt");
 
 	if (!inFile) {
 		cerr << "Unable to open file node.txt";
@@ -118,7 +118,7 @@ vector<Road> readStreets() {
 	vector<Road> roads;
 
 	//Ler o ficheiro nos.txt
-	inFile.open("roads.txt");
+	inFile.open("pp2.txt");
 
 	if (!inFile) {
 		cerr << "Unable to open file node.txt";
@@ -165,7 +165,7 @@ void readEdges() {
 	ifstream inFile;
 
 	//Ler o ficheiro nos.txt
-	inFile.open("edges.txt");
+	inFile.open("pp3.txt");
 
 	if (!inFile) {
 		cerr << "Unable to open file node.txt";
@@ -292,53 +292,50 @@ int main() {
 		cout<<v[i].getId()<<endl;
 	}
 
-	GraphViewer *gv = new GraphViewer(600, 600, false);
-	gv->createWindow(600, 600);
-	gv->defineEdgeColor("blue");
-	gv->defineVertexColor("yellow");
-	double minLat = 9999;
-	double minLon = 9999;
-	double maxLat = -9999;
-	double maxLon = -9999;
-	//y is latitude
-	//x is longitude
 
-	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
-		double nodeLat =
-				graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
-		double nodeLon =
-				graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
-		//cout << " |nodelat" << nodeLat << " |nodeLon" << nodeLon << endl;
-		if (nodeLat < minLat)
-			minLat = nodeLat;
-		if (nodeLat > maxLat)
-			maxLat = nodeLat;
-		if (nodeLon < minLon)
-			minLon = nodeLon;
-		if (nodeLat > maxLon)
-			maxLon = nodeLat;
-	}
+	long int xmin=999999999;
+	long int xmax=-9999999999999999;
+	long int ymin=999999999;
+	long int ymax=-1;
 
-	//cout << " |minlat" << minLat << " |maxlat" << maxLat << " |minlon" << minLon<< " |maxlon" << minLon << endl;
 
 	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
 		double lat = graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
 		double lon = graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
 		int x,y;
-		x = floor(((lon-minLon)*4200/(maxLon-minLon)));
-		y = floor(((lat-minLat)*3183/(maxLat-minLat)));
+		x = -6370000 * cos(lat)*sin(lon);
+		y = 6370000* sin(lat);
 
-		gv->addNode(graph.getVertexSet()[i]->getInfo().getId(),x,y);
-		long long idPrint = graph.getVertexSet()[i]->getInfo().getId();
-		stringstream idV;
-		idV << idPrint;
-		gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(), idV.str());
+		if(x>xmax)
+			xmax=x;
+		if(x<xmin)
+			xmin=x;
+		if(y>ymax)
+			ymax=y;
+		if(y<ymin)
+			ymin=y;
 	}
-	/*
-	struct foo{
-		int
+	GraphViewer *gv = new GraphViewer(xmax-xmin, ymax-ymin, false);
+		gv->createWindow(xmax-xmin, ymax-ymin);
+		gv->defineEdgeColor("blue");
+		gv->defineVertexColor("yellow");
+	for(unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
 
-	};*/
+		double lat = graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
+				double lon = graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
+				int x,y;
+				x = -6370000 * cos(lat)*sin(lon);
+				y = 6370000* sin(lat);
+
+		gv->addNode(graph.getVertexSet()[i]->getInfo().getId(),round((x-xmin)*0.5),round((y-ymin)*0.5));
+			long long idPrint = graph.getVertexSet()[i]->getInfo().getId();
+			stringstream idV;
+			idV << idPrint;
+			gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(), idV.str());
+
+	}
+	cout<<"---------------"<<endl<<xmax<<"    "<<xmin<<endl<<ymin<<"    "<<ymax<<endl;
+
 	int edgeID = 0;
 	int k = 1;
 	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
