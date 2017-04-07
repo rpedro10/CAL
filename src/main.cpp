@@ -278,6 +278,8 @@ int main() {
 
 
 	Vertex<NodeInf>* source = graph.getVertexSet()[15];
+	Vertex<NodeInf>* dest = graph.getVertexSet()[1425];
+
 
 	Vertex<NodeInf>* node_prox;
 	cout<<"size:"<<lixo.size()<<endl;
@@ -310,11 +312,22 @@ for(int j =0;j<3;j++){
 	graph.dijkstraShortestPath(source->getInfo());
 	vector<NodeInf> v = graph.getPath(source->getInfo(), node_prox->getInfo());
 
-	for(int jj=0;jj<v.size();jj++){
+	for(unsigned int jj=0;jj<v.size();jj++){
 		path.push_back(v[jj]);
 	}
+	if(j==2){
+		graph.dijkstraShortestPath(source->getInfo());
+			vector<NodeInf> v = graph.getPath(source->getInfo(), dest->getInfo());
+			for(unsigned int jj=0;jj<v.size();jj++){
+				path.push_back(v[jj]);
+			}
+
+	}
+	else
+	{
 	lixo.erase(lixo.begin()+index);
 	cout<<"size:"<<lixo.size()<<endl;
+	}
 
 }
 
@@ -347,10 +360,8 @@ for(int j =0;j<3;j++){
 	gv->defineVertexColor("yellow");
 	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
 
-		double lat =
-				graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
-		double lon =
-				graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
+		double lat =graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
+		double lon =graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
 		int x, y;
 		x = -6370000 * cos(lat) * sin(lon);
 		y = 6370000 * sin(lat);
