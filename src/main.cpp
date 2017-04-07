@@ -12,9 +12,7 @@
 
 Graph<NodeInf> graph;
 
-
 using namespace std;
-
 
 vector<Bin> readBins() {
 	ifstream inFile;
@@ -30,6 +28,7 @@ vector<Bin> readBins() {
 	string line;
 	string type;
 	vector<Bin> contentor;
+
 	long long node_id;
 
 	while (getline(inFile, line)) {
@@ -41,23 +40,29 @@ vector<Bin> readBins() {
 		line = line.substr(line.find(";") + 1, string::npos);
 		type = line.substr(0, line.find(";"));
 
+		bool found = false;
+		for (int i = 0; i < contentor.size(); i++) {
+			if (node_id == contentor[i].getId()) {
+				found = true;
+			}
 
-		cout << "node_id: " << node_id << " type:" << type <<endl;
-		Bin newBin = Bin(node_id,type);
-		contentor.push_back(newBin);
+		}
+		if (!found) {
+			Bin newBin = Bin(node_id, type);
+			contentor.push_back(newBin);
+		}
 	}
 	inFile.close();
 
 	return contentor;
 
 }
-
 void readNodes() {
 
 	ifstream inFile;
 
 	//Ler o ficheiro nos.txt
-	inFile.open("pp1.txt");
+	inFile.open("mf1.txt");
 
 	if (!inFile) {
 		cerr << "Unable to open file node.txt";
@@ -65,7 +70,7 @@ void readNodes() {
 	}
 
 	string line;
-	long long  id = 0;
+	long long id = 0;
 	double coordX, coordY, pointX, pointY;
 	int nLine = 0;
 	vector<Bin> existingBins = readBins();
@@ -94,11 +99,11 @@ void readNodes() {
 		linestream >> pointY;
 
 		//cout << "id: " << id << " x1: " << coordX << " y1: " << coordY
-				//<< " x2: " << pointX << " y2: " << pointY << endl;
+		//<< " x2: " << pointX << " y2: " << pointY << endl;
 
 		Position pos(pointX, pointY);
 
-		for (unsigned int i = 0; i < existingBins.size();i++){
+		for (unsigned int i = 0; i < existingBins.size(); i++) {
 			if (existingBins[i].getId() == id)
 				isBin = true;
 		}
@@ -118,7 +123,7 @@ vector<Road> readStreets() {
 	vector<Road> roads;
 
 	//Ler o ficheiro nos.txt
-	inFile.open("pp2.txt");
+	inFile.open("mf2.txt");
 
 	if (!inFile) {
 		cerr << "Unable to open file node.txt";
@@ -127,7 +132,6 @@ vector<Road> readStreets() {
 
 	string line;
 	string name;
-
 
 	while (getline(inFile, line)) {
 
@@ -142,7 +146,7 @@ vector<Road> readStreets() {
 		string both = line.substr(0, line.find(";") - 1);					//
 
 		/*cout << "id: " << id << " name:" << nome << " both:" << both
-				<< endl;*/
+		 << endl;*/
 		bool both_ways;
 
 		if (both == "False")
@@ -165,7 +169,7 @@ void readEdges() {
 	ifstream inFile;
 
 	//Ler o ficheiro nos.txt
-	inFile.open("pp3.txt");
+	inFile.open("mf3.txt");
 
 	if (!inFile) {
 		cerr << "Unable to open file node.txt";
@@ -178,7 +182,7 @@ void readEdges() {
 
 	long long source_id, dest_id;
 
-	vector<Road>rr = readStreets();
+	vector<Road> rr = readStreets();
 
 	int check = 0;
 	while (getline(inFile, line)) {
@@ -195,7 +199,7 @@ void readEdges() {
 		linestream >> dest_id;
 
 		//cout << "id: " << street_id <<endl; //<< " source: " << source_id << " destiny: "
-				//<< dest_id << endl;
+		//<< dest_id << endl;
 
 		Vertex<NodeInf>* node1;
 		Vertex<NodeInf>* node2;
@@ -208,50 +212,39 @@ void readEdges() {
 		node2 = graph.getVertex(dd);
 		//cout << node1->getInfo().getId();
 		/*if(graph.getVertex(nn) == NULL)
-			cout<<"nulll"<<endl;*/
+		 cout<<"nulll"<<endl;*/
 
 		// calcular distancia (peso)
 		//cout<<node1->getInfo().getId()<<endl;
 
-
-
-
 		double long1 = node1->getInfo().getCoordinate().getLongitude();
-
-
 		double long2 = node2->getInfo().getCoordinate().getLongitude();
 		double lat1 = node1->getInfo().getCoordinate().getLatitude();
 		double lat2 = node2->getInfo().getCoordinate().getLatitude();
 		//cout<<"--"<< lat2<<endl;
 
-
 		double u = sin((lat2 - lat1) / 2);
 		double v = sin((long2 - long1) / 2);
 
-		double res = 2.0 * 6371.0* asin(sqrt(u * u + cos(lat1) * cos(lat2) * v * v));
+		double res = 2.0 * 6371.0
+				* asin(sqrt(u * u + cos(lat1) * cos(lat2) * v * v));
 
-	//	if(res==0.0)
-	//	res+=0.0001;
+		//	if(res==0.0)
+		//	res+=0.0001;
 
-
-		if(node2->getInfo().isContentor())
-			res= res/100000;
+		if (node2->getInfo().isContentor())
+			res = res / 2;
 
 		node1->addEdge(node2, res);
 
-
-
-		for (unsigned int i = 0; i < rr.size(); i++)
-		{
+		for (unsigned int i = 0; i < rr.size(); i++) {
 			//cout << rr[i].getId()<<endl;
 			//cout << street_id<<endl;
-			if ( ( rr[i].getId() == street_id ) && (rr[i].isBothWays() == true))
-			{
+			if ((rr[i].getId() == street_id) && (rr[i].isBothWays() == true)) {
 				check++;
 				node2->addEdge(node1, res);
 			}
 		}
-
 
 		//cout << res << endl;
 
@@ -261,80 +254,118 @@ void readEdges() {
 
 }
 
-
 int main() {
-
+	cout << "llllllllllll" << endl;
 	//vector<Road>rr = readStreets();
 	readNodes();
 	//cout << "pla" << endl;
 	//cout << "----" << graph.getVertexSet()[0]->getInfo().getId();
 	readEdges();
 	vector<Bin> lixo = readBins();
+	cout << "tttttttttttttttt" << endl;
 
+	/**
+	 for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
 
-	for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
+	 for(unsigned int j=0;j<graph.getVertexSet()[i]->getAdj().size();j++)
+	 cout<<graph.getVertexSet()[i]->getAdj()[j].getWeight()<<endl;
 
-		for(unsigned int j=0;j<graph.getVertexSet()[i]->getAdj().size();j++)
-			cout<<graph.getVertexSet()[i]->getAdj()[j].getWeight()<<endl;
-
-	}
+	 }
+	 */
 
 	//25504120
 
-	graph.dijkstraShortestPath(graph.getVertexSet()[5210]->getInfo());
-
-	vector<NodeInf>v = graph.getPath(graph.getVertexSet()[5210]->getInfo(),graph.getVertexSet()[5296]->getInfo());
 
 
+	Vertex<NodeInf>* source = graph.getVertexSet()[15];
 
-	cout<<v.size()<<endl;
-	for(int i=0;i<v.size();i++){
-		cout<<v[i].getId()<<endl;
+	Vertex<NodeInf>* node_prox;
+	cout<<"size:"<<lixo.size()<<endl;
+
+	vector<NodeInf> path;
+for(int j =0;j<3;j++){
+	int index;
+	double distmin = 33.33;
+	for (int i = 0; i < lixo.size(); i++) {
+		Vertex<NodeInf>* node1;
+		node1 = graph.getVertex(lixo[i].getId());
+		cout << lixo[i].getId() << endl;
+
+		double long1 = node1->getInfo().getCoordinate().getLongitude();
+		double long2 = source->getInfo().getCoordinate().getLongitude();
+		double lat1 = node1->getInfo().getCoordinate().getLatitude();
+		double lat2 = source->getInfo().getCoordinate().getLatitude();
+
+		double u = sin((lat2 - lat1) / 2);
+		double v = sin((long2 - long1) / 2);
+
+		double res = abs(2.0 * 6371.0* asin(sqrt(u * u + cos(lat1) * cos(lat2) * v * v)));
+		cout<<"res:"<<res<<endl;
+		if ((res < distmin) && (res!=0) ){
+			distmin = res;
+			node_prox = node1;
+			index=i;
+		}
 	}
+	graph.dijkstraShortestPath(source->getInfo());
+	vector<NodeInf> v = graph.getPath(source->getInfo(), node_prox->getInfo());
 
+	for(int jj=0;jj<v.size();jj++){
+		path.push_back(v[jj]);
+	}
+	lixo.erase(lixo.begin()+index);
+	cout<<"size:"<<lixo.size()<<endl;
 
-	long int xmin=999999999;
-	long int xmax=-9999999999999999;
-	long int ymin=999999999;
-	long int ymax=-1;
+}
 
+	long int xmin = 999999999;
+	long int xmax = -9999999999999999;
+	long int ymin = 999999999;
+	long int ymax = -1;
 
 	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
-		double lat = graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
-		double lon = graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
-		int x,y;
-		x = -6370000 * cos(lat)*sin(lon);
-		y = 6370000* sin(lat);
+		double lat =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
+		double lon =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
+		int x, y;
+		x = -6370000 * cos(lat) * sin(lon);
+		y = 6370000 * sin(lat);
 
-		if(x>xmax)
-			xmax=x;
-		if(x<xmin)
-			xmin=x;
-		if(y>ymax)
-			ymax=y;
-		if(y<ymin)
-			ymin=y;
+		if (x > xmax)
+			xmax = x;
+		if (x < xmin)
+			xmin = x;
+		if (y > ymax)
+			ymax = y;
+		if (y < ymin)
+			ymin = y;
 	}
-	GraphViewer *gv = new GraphViewer(xmax-xmin, ymax-ymin, false);
-		gv->createWindow(xmax-xmin, ymax-ymin);
-		gv->defineEdgeColor("blue");
-		gv->defineVertexColor("yellow");
-	for(unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
+	GraphViewer *gv = new GraphViewer(xmax - xmin, ymax - ymin, false);
+	gv->createWindow(xmax - xmin, ymax - ymin);
+	gv->defineEdgeColor("blue");
+	gv->defineVertexColor("yellow");
+	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
 
-		double lat = graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
-				double lon = graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
-				int x,y;
-				x = -6370000 * cos(lat)*sin(lon);
-				y = 6370000* sin(lat);
+		double lat =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
+		double lon =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
+		int x, y;
+		x = -6370000 * cos(lat) * sin(lon);
+		y = 6370000 * sin(lat);
 
-		gv->addNode(graph.getVertexSet()[i]->getInfo().getId(),round((x-xmin)*0.5),round((y-ymin)*0.5));
-			long long idPrint = graph.getVertexSet()[i]->getInfo().getId();
-			stringstream idV;
-			idV << idPrint;
-			gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(), idV.str());
+		gv->addNode(graph.getVertexSet()[i]->getInfo().getId(),
+				round((x - xmin) * 0.5), round((y - ymin) * 0.5));
+		long long idPrint = graph.getVertexSet()[i]->getInfo().getId();
+		stringstream idV;
+		idV << idPrint;
+
+		gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(),
+				idV.str());
 
 	}
-	cout<<"---------------"<<endl<<xmax<<"    "<<xmin<<endl<<ymin<<"    "<<ymax<<endl;
+	//cout<<"---------------"<<endl<<xmax<<"    "<<xmin<<endl<<ymin<<"    "<<ymax<<endl;
 
 	int edgeID = 0;
 	int k = 1;
@@ -351,27 +382,20 @@ int main() {
 		}
 	}
 
-	for (unsigned int i = 0; i < v.size(); i++)
-	{
-		gv->setVertexColor(v[i].getId(), RED);
-/*
+	for (unsigned int i = 0; i < path.size(); i++) {
+		gv->setVertexColor(path[i].getId(), RED);
+
 		Vertex<NodeInf>* node1;
-		NodeInf nn(v[i].getId());
+		NodeInf nn(path[i].getId());
 		node1 = graph.getVertex(nn);
 
-		for (int i = 0; i < edgeID;i++)
-		{
-			gv->setEdgeColor(path[i]->adj[k]->getEdgeID(), RED);
-		}
-*/
 	}
 
-	/*
 	for (unsigned int i = 0; i < lixo.size(); i++) {
 
-		gv->setVertexColor(lixo[i].getId(), GREEN);
-	}*/
-
+		//gv->setVertexColor(lixo[i].getId(), GREEN);
+		gv->setVertexLabel(lixo[i].getId(), "contentor");
+	}
 
 	gv->rearrange();
 	cin.get();
