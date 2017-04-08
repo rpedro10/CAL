@@ -21,6 +21,27 @@ using namespace std;
 #define ROADS_FILE  "mf2.txt"
 #define BINS_FILE  "bin.txt"
 
+
+double calculateDistance(Vertex<NodeInf> *source, Vertex<NodeInf> *node1) {
+	double long1 = node1->getInfo().getCoordinate().getLongitude();
+				double long2 = source->getInfo().getCoordinate().getLongitude();
+				double lat1 = node1->getInfo().getCoordinate().getLatitude();
+				double lat2 = source->getInfo().getCoordinate().getLatitude();
+
+				double u = sin((lat2 - lat1) / 2);
+				double v = sin((long2 - long1) / 2);
+
+				return ( abs(
+						2.0 * 6371.0
+								* asin(
+										sqrt(
+												u * u
+														+ cos(lat1) * cos(lat2) * v
+																* v))));
+
+
+}
+
 vector<Bin> readBins() {
 	ifstream inFile;
 
@@ -220,29 +241,8 @@ void readEdges(Graph<T> &graph) {
 
 		node1 = graph.getVertex(nn);
 		node2 = graph.getVertex(dd);
-		//cout << node1->getInfo().getId();
-		/*if(graph.getVertex(nn) == NULL)
-		 cout<<"nulll"<<endl;*/
 
-		// calcular distancia (peso)
-		//cout<<node1->getInfo().getId()<<endl;
-		double long1 = node1->getInfo().getCoordinate().getLongitude();
-		double long2 = node2->getInfo().getCoordinate().getLongitude();
-		double lat1 = node1->getInfo().getCoordinate().getLatitude();
-		double lat2 = node2->getInfo().getCoordinate().getLatitude();
-		//cout<<"--"<< lat2<<endl;
-
-		double u = sin((lat2 - lat1) / 2);
-		double v = sin((long2 - long1) / 2);
-
-		double res = 2.0 * 6371.0
-				* asin(sqrt(u * u + cos(lat1) * cos(lat2) * v * v));
-
-		//	if(res==0.0)
-		//	res+=0.0001;
-
-		if (node2->getInfo().isContentor())
-			res = res / 2;
+		double res = calculateDistance(node1,node2);
 
 		node1->addEdge(node2, res);
 
@@ -262,5 +262,6 @@ void readEdges(Graph<T> &graph) {
 	inFile.close();
 
 }
+
 
 #endif /* SRC_UTILITIES_H_ */

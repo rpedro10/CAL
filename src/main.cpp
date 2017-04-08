@@ -4,7 +4,7 @@
 #include "Road.h"
 #include "graphviewer.h"
 #include "Bin.h"
-#include "Parser.h"
+#include "Utilities.h"
 
 #include <fstream>
 #include <sstream>
@@ -124,63 +124,108 @@ int main() {
 	Vertex<NodeInf>* dest = graph.getVertexSet()[DEST_INDEX];
 
 	Vertex<NodeInf>* node_prox;
-	cout << "size:" << lixo.size() << endl;
 
-	vector<NodeInf> path;
-	for (int j = 0; j < num; j++) {
-		int index;
-		double distmin = 33.33;
-		for (int i = 0; i < lixo.size(); i++) {
-			Vertex<NodeInf>* node1;
-			node1 = graph.getVertex(lixo[i].getId());
-			cout << lixo[i].getId() << endl;
 
-			double long1 = node1->getInfo().getCoordinate().getLongitude();
-			double long2 = source->getInfo().getCoordinate().getLongitude();
-			double lat1 = node1->getInfo().getCoordinate().getLatitude();
-			double lat2 = source->getInfo().getCoordinate().getLatitude();
 
-			double u = sin((lat2 - lat1) / 2);
-			double v = sin((long2 - long1) / 2);
-
-			double res = abs(
-					2.0 * 6371.0
-							* asin(
-									sqrt(
-											u * u
-													+ cos(lat1) * cos(lat2) * v
-															* v)));
-			cout << "res:" << res << endl;
-			if ((res < distmin) && (res != 0)) {
-				distmin = res;
-				node_prox = node1;
-				index = i;
+	int nIte = lixo.size() / num;
+	for (int k = 0; k < nIte; k++) {
+		vector<NodeInf> path;
+		for (int j = 0; j < num; j++) {
+			cout << "size:" << lixo.size() << endl;
+			int index;
+			double distmin = 33.33;
+			for (int i = 0; i < lixo.size(); i++) {
+				Vertex<NodeInf>* node1;
+				node1 = graph.getVertex(lixo[i].getId());
+				cout << lixo[i].getId() << endl;
+				double res = calculateDistance(source,node1);
+				if ((res < distmin) && (res != 0)) {
+					distmin = res;
+					node_prox = node1;
+					index = i;
+				}
 			}
-		}
-		graph.dijkstraShortestPath(source->getInfo());
-		vector<NodeInf> v = graph.getPath(source->getInfo(),
-				node_prox->getInfo());
-
-		for (unsigned int jj = 0; jj < v.size(); jj++) {
-			path.push_back(v[jj]);
-		}
-		if (j == 2) {
 			graph.dijkstraShortestPath(source->getInfo());
 			vector<NodeInf> v = graph.getPath(source->getInfo(),
-					dest->getInfo());
+					node_prox->getInfo());
+
 			for (unsigned int jj = 0; jj < v.size(); jj++) {
 				path.push_back(v[jj]);
 			}
 
-		} else {
+			if (j == (num - 1)) {
+				graph.dijkstraShortestPath(source->getInfo());
+				vector<NodeInf> v = graph.getPath(source->getInfo(),
+						dest->getInfo());
+				for (unsigned int jj = 0; jj < v.size(); jj++) {
+					path.push_back(v[jj]);
+				}
+
+			}
 			lixo.erase(lixo.begin() + index);
-			cout << "size:" << lixo.size() << endl;
 		}
 
+		displayGraph(graph, path);
 	}
+	if (lixo.size() > 0) {
 
-	displayGraph(graph,path);
+		int nIte = lixo.size();
 
+		vector<NodeInf> path;
+		for (int j = 0; j < nIte; j++) {
+			cout << "size:" << lixo.size() << endl;
+			int index;
+			double distmin = 33.33;
+			for (int i = 0; i < lixo.size(); i++) {
+				Vertex<NodeInf>* node1;
+				node1 = graph.getVertex(lixo[i].getId());
+				cout << lixo[i].getId() << endl;
+
+				double long1 = node1->getInfo().getCoordinate().getLongitude();
+				double long2 = source->getInfo().getCoordinate().getLongitude();
+				double lat1 = node1->getInfo().getCoordinate().getLatitude();
+				double lat2 = source->getInfo().getCoordinate().getLatitude();
+
+				double u = sin((lat2 - lat1) / 2);
+				double v = sin((long2 - long1) / 2);
+
+				double res = abs(
+						2.0 * 6371.0
+								* asin(
+										sqrt(
+												u * u
+														+ cos(lat1) * cos(lat2)
+																* v * v)));
+				cout << "res:" << res << endl;
+				if ((res < distmin) && (res != 0)) {
+					distmin = res;
+					node_prox = node1;
+					index = i;
+				}
+			}
+			graph.dijkstraShortestPath(source->getInfo());
+			vector<NodeInf> v = graph.getPath(source->getInfo(),
+					node_prox->getInfo());
+
+			for (unsigned int jj = 0; jj < v.size(); jj++) {
+				path.push_back(v[jj]);
+			}
+
+			if (j == (nIte - 1)) {
+				graph.dijkstraShortestPath(source->getInfo());
+				vector<NodeInf> v = graph.getPath(source->getInfo(),
+						dest->getInfo());
+				for (unsigned int jj = 0; jj < v.size(); jj++) {
+					path.push_back(v[jj]);
+				}
+
+			}
+			lixo.erase(lixo.begin() + index);
+		}
+
+		displayGraph(graph, path);
+
+	}
 	/**
 	 for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
 	 cout<<"    "<<endl;
