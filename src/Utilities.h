@@ -16,9 +16,9 @@
 
 using namespace std;
 
-#define NODES_FILE  "mf1.txt"
-#define EDGES_FILE  "mf3.txt"
-#define ROADS_FILE  "mf2.txt"
+#define NODES_FILE  "file1.txt"
+#define EDGES_FILE  "file3.txt"
+#define ROADS_FILE  "file2.txt"
 #define BINS_FILE  "bin.txt"
 
 
@@ -215,7 +215,6 @@ void readEdges(Graph<T> &graph) {
 
 	vector<Road> rr = readStreets();
 
-	int check = 0;
 	while (getline(inFile, line)) {
 
 		stringstream linestream(line);
@@ -243,19 +242,18 @@ void readEdges(Graph<T> &graph) {
 		node2 = graph.getVertex(dd);
 
 		double res = calculateDistance(node1,node2);
-
+		if(node2->getInfo().isContentor())
+			res/=100;
 		node1->addEdge(node2, res);
 
 		for (unsigned int i = 0; i < rr.size(); i++) {
 			//cout << rr[i].getId()<<endl;
 			//cout << street_id<<endl;
 			if ((rr[i].getId() == street_id) && (rr[i].isBothWays() == true)) {
-				check++;
 				node2->addEdge(node1, res);
 			}
 		}
 
-		//cout << res << endl;
 
 	}
 
