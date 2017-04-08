@@ -11,81 +11,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SOURCE_INDEX 15
+#define DEST_INDEX 1425
 
 using namespace std;
 
-
-
-int main() {
-	Graph<NodeInf> graph;
-	readNodes(graph);
-	readEdges(graph);
-	vector<Bin> lixo = readBins();
-
-	/**
-	 for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
-
-	 for(unsigned int j=0;j<graph.getVertexSet()[i]->getAdj().size();j++)
-	 cout<<graph.getVertexSet()[i]->getAdj()[j].getWeight()<<endl;
-
-	 }
-	 */
-	Vertex<NodeInf>* source = graph.getVertexSet()[15];
-	Vertex<NodeInf>* dest = graph.getVertexSet()[1425];
-
-
-	Vertex<NodeInf>* node_prox;
-	cout<<"size:"<<lixo.size()<<endl;
-
-	vector<NodeInf> path;
-for(int j =0;j<3;j++){
-	int index;
-	double distmin = 33.33;
-	for (int i = 0; i < lixo.size(); i++) {
-		Vertex<NodeInf>* node1;
-		node1 = graph.getVertex(lixo[i].getId());
-		cout << lixo[i].getId() << endl;
-
-		double long1 = node1->getInfo().getCoordinate().getLongitude();
-		double long2 = source->getInfo().getCoordinate().getLongitude();
-		double lat1 = node1->getInfo().getCoordinate().getLatitude();
-		double lat2 = source->getInfo().getCoordinate().getLatitude();
-
-		double u = sin((lat2 - lat1) / 2);
-		double v = sin((long2 - long1) / 2);
-
-		double res = abs(2.0 * 6371.0* asin(sqrt(u * u + cos(lat1) * cos(lat2) * v * v)));
-		cout<<"res:"<<res<<endl;
-		if ((res < distmin) && (res!=0) ){
-			distmin = res;
-			node_prox = node1;
-			index=i;
-		}
-	}
-	graph.dijkstraShortestPath(source->getInfo());
-	vector<NodeInf> v = graph.getPath(source->getInfo(), node_prox->getInfo());
-
-	for(unsigned int jj=0;jj<v.size();jj++){
-		path.push_back(v[jj]);
-	}
-	if(j==2){
-		graph.dijkstraShortestPath(source->getInfo());
-			vector<NodeInf> v = graph.getPath(source->getInfo(), dest->getInfo());
-			for(unsigned int jj=0;jj<v.size();jj++){
-				path.push_back(v[jj]);
-			}
-
-	}
-	else
-	{
-	lixo.erase(lixo.begin()+index);
-	cout<<"size:"<<lixo.size()<<endl;
-	}
-
-}
-
-	long int xmin = 999999999;
-	long int xmax = -9999999999999999;
+void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path){
+long int xmin = 999999999;
+	long int xmax = -99999999;
 	long int ymin = 999999999;
 	long int ymax = -1;
 
@@ -113,8 +46,10 @@ for(int j =0;j<3;j++){
 	gv->defineVertexColor("yellow");
 	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
 
-		double lat =graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
-		double lon =graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
+		double lat =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
+		double lon =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
 		int x, y;
 		x = -6370000 * cos(lat) * sin(lon);
 		y = 6370000 * sin(lat);
@@ -131,7 +66,6 @@ for(int j =0;j<3;j++){
 	}
 
 	int edgeID = 0;
-	int k = 1;
 	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
 		for (unsigned int j = 0; j < graph.getVertexSet()[i]->getAdj().size();
 				j++) {
@@ -141,7 +75,6 @@ for(int j =0;j<3;j++){
 			edgeID++;
 			//add road names, not advised.
 			//gv->setEdgeLabel(k, graph->vertexSet[i]->adj[j]->getRoad()->getName());
-			k++;
 		}
 	}
 
@@ -154,14 +87,99 @@ for(int j =0;j<3;j++){
 
 	}
 
-	for (unsigned int i = 0; i < lixo.size(); i++) {
+	vector<Bin> original_lixos = readBins();
+	for (unsigned int i = 0; i < original_lixos.size(); i++) {
 
-		//gv->setVertexColor(lixo[i].getId(), GREEN);
-		gv->setVertexLabel(lixo[i].getId(), "contentor");
+		gv->setVertexColor(original_lixos[i].getId(), GREEN);
+		gv->setVertexLabel(original_lixos[i].getId(), "contentor");
 	}
+	gv->setVertexColor(graph.getVertexSet()[SOURCE_INDEX]->getInfo().getId(), BLUE);
+	gv->setVertexColor(graph.getVertexSet()[DEST_INDEX]->getInfo().getId(), CYAN);
 
 	gv->rearrange();
+	cin.ignore(1000,'\n');
+	cin.clear();
 	cin.get();
+}
+
+int main() {
+	Graph<NodeInf> graph;
+	readNodes(graph);
+	readEdges(graph);
+	vector<Bin> lixo = readBins();
+	int num;
+	cout << "Existem " << lixo.size() << "contentores cheios" << endl;
+	cout << "Capacidade do camiao (em contentores)?";
+	cin >> num;
+
+	/**
+	 for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
+
+	 for(unsigned int j=0;j<graph.getVertexSet()[i]->getAdj().size();j++)
+	 cout<<graph.getVertexSet()[i]->getAdj()[j].getWeight()<<endl;
+
+	 }
+	 */
+	Vertex<NodeInf>* source = graph.getVertexSet()[SOURCE_INDEX];
+	Vertex<NodeInf>* dest = graph.getVertexSet()[DEST_INDEX];
+
+	Vertex<NodeInf>* node_prox;
+	cout << "size:" << lixo.size() << endl;
+
+	vector<NodeInf> path;
+	for (int j = 0; j < num; j++) {
+		int index;
+		double distmin = 33.33;
+		for (int i = 0; i < lixo.size(); i++) {
+			Vertex<NodeInf>* node1;
+			node1 = graph.getVertex(lixo[i].getId());
+			cout << lixo[i].getId() << endl;
+
+			double long1 = node1->getInfo().getCoordinate().getLongitude();
+			double long2 = source->getInfo().getCoordinate().getLongitude();
+			double lat1 = node1->getInfo().getCoordinate().getLatitude();
+			double lat2 = source->getInfo().getCoordinate().getLatitude();
+
+			double u = sin((lat2 - lat1) / 2);
+			double v = sin((long2 - long1) / 2);
+
+			double res = abs(
+					2.0 * 6371.0
+							* asin(
+									sqrt(
+											u * u
+													+ cos(lat1) * cos(lat2) * v
+															* v)));
+			cout << "res:" << res << endl;
+			if ((res < distmin) && (res != 0)) {
+				distmin = res;
+				node_prox = node1;
+				index = i;
+			}
+		}
+		graph.dijkstraShortestPath(source->getInfo());
+		vector<NodeInf> v = graph.getPath(source->getInfo(),
+				node_prox->getInfo());
+
+		for (unsigned int jj = 0; jj < v.size(); jj++) {
+			path.push_back(v[jj]);
+		}
+		if (j == 2) {
+			graph.dijkstraShortestPath(source->getInfo());
+			vector<NodeInf> v = graph.getPath(source->getInfo(),
+					dest->getInfo());
+			for (unsigned int jj = 0; jj < v.size(); jj++) {
+				path.push_back(v[jj]);
+			}
+
+		} else {
+			lixo.erase(lixo.begin() + index);
+			cout << "size:" << lixo.size() << endl;
+		}
+
+	}
+
+	displayGraph(graph,path);
 
 	/**
 	 for (unsigned int i = 0; i < graph.getVertexSet().size() ; i++) {
