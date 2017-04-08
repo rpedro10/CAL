@@ -1,0 +1,7 @@
+474797434;industrial;
+353290227;domestico;
+126617427;industrial;
+425725651;domestico;
+122452429;domestico;
+1216466457;industrial;
+311889376;industrial;
