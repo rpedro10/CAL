@@ -38,7 +38,9 @@ int main() {
 
 		Vertex<NodeInf>* source = graph.getVertexSet()[SOURCE_INDEX];
 		Vertex<NodeInf>* dest = graph.getVertexSet()[DEST_INDEX];
-		computePath(lixo, num, source, graph, dest);
+		Vertex<NodeInf>* dest2 = graph.getVertexSet()[DEST2_INDEX];
+
+		computePath(lixo, num, source, graph, dest,dest2);
 	}
 	if (opt == 2) {
 		readNodes(graph, "type_bins.txt");
@@ -50,7 +52,7 @@ int main() {
 		cout << "Existem  " << lixo.size() << " contentores cheios" << endl;
 		computePathDifferentTypes(lixo, source, graph, dest);
 	}
-	if (opt == 3) {
+	/**if (opt == 3) {
 		readNodes(graph, "bin.txt");
 		readEdges(graph);
 		Vertex<NodeInf>* source = graph.getVertexSet()[SOURCE_INDEX];
@@ -58,6 +60,7 @@ int main() {
 		Vertex<NodeInf>* dest = graph.getVertexSet()[DEST_INDEX];
 
 	}
+	*/
 
 	return 0;
 }

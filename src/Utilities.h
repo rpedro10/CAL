@@ -20,6 +20,7 @@ using namespace std;
 #define EDGES_FILE  "file3.txt"
 #define ROADS_FILE  "file2.txt"
 #define BINS_FILE  "bin.txt"
+#define DEST2_INDEX 2597
 
 #define SOURCE_INDEX 15
 #define DEST_INDEX 5760
@@ -85,8 +86,7 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 		stringstream idV;
 		idV << idPrint;
 
-		gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(),"-"
-				);//idV.str()
+		gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(), "-"); //idV.str()
 
 	}
 
@@ -122,6 +122,8 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 			"truck.png");
 	gv->setVertexIcon(graph.getVertexSet()[DEST_INDEX]->getInfo().getId(),
 			"landfill.png");
+	gv->setVertexIcon(graph.getVertexSet()[DEST2_INDEX]->getInfo().getId(),
+			"landfill.png");
 
 	gv->rearrange();
 	cin.ignore(1000, '\n');
@@ -130,7 +132,7 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 }
 
 void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
-		Graph<NodeInf> graph, Vertex<NodeInf>* dest) {
+		Graph<NodeInf> graph, Vertex<NodeInf>* dest, Vertex<NodeInf>* dest2) {
 	Vertex<NodeInf>* temp = source;
 	Vertex<NodeInf>* node_prox;
 	vector<Bin> bins_visited;
@@ -166,8 +168,21 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 
 			if (j == (num - 1)) {
 				graph.dijkstraShortestPath(temp->getInfo());
-				vector<NodeInf> v = graph.getPath(temp->getInfo(),
-						dest->getInfo());
+				//	vector<NodeInf> v = graph.getPath(temp->getInfo(),
+				//			dest2->getInfo());
+
+				double dist1 = calculateDistance(temp, dest);
+				double dist2 = calculateDistance(temp, dest2);
+				cout<<"distancias"<<dist1<<"---"<<dist2<<endl;
+				if (dist2 > dist1) {
+					vector<NodeInf> v = graph.getPath(temp->getInfo(),
+							dest2->getInfo());
+				}
+				else {
+					vector<NodeInf> v = graph.getPath(temp->getInfo(),
+							dest->getInfo());
+				}
+
 				for (unsigned int jj = 0; jj < v.size(); jj++) {
 					path.push_back(v[jj]);
 				}
@@ -213,8 +228,15 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 			temp = node_prox;
 			if (j == (nIte - 1)) {
 				graph.dijkstraShortestPath(temp->getInfo());
-				vector<NodeInf> v = graph.getPath(temp->getInfo(),
-						dest->getInfo());
+				double dist1 = calculateDistance(temp, dest);
+				double dist2 = calculateDistance(temp, dest2);
+				if (dist1 < dist2)
+					vector<NodeInf> v = graph.getPath(temp->getInfo(),
+							dest->getInfo());
+				else
+					vector<NodeInf> v = graph.getPath(temp->getInfo(),
+							dest2->getInfo());
+
 				for (unsigned int jj = 0; jj < v.size(); jj++) {
 					path.push_back(v[jj]);
 				}
@@ -234,9 +256,8 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 	}
 
 }
-void computePathDifferentTypes(vector<Bin>&lixo,
-		Vertex<NodeInf>*& source, Graph<NodeInf> &graph,
-		Vertex<NodeInf>* &dest) {
+void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
+		Graph<NodeInf> &graph, Vertex<NodeInf>* &dest) {
 	Vertex<NodeInf>* temp = source;
 	Vertex<NodeInf>* node_prox;
 	cout << "here";
@@ -296,46 +317,46 @@ void computePathDifferentTypes(vector<Bin>&lixo,
 	temp = source;
 
 	for (unsigned t = 0; t < industrial.size(); t++) {
-			double distmin = 33.33;
-			int index;
-			for (int i = 0; i < industrial.size(); i++) {
-				Vertex<NodeInf>* node1;
-				node1 = graph.getVertex(industrial[i].getId());
-				//cout << domestico[i].getId() << endl;
-				double res = calculateDistance(temp, node1);
-				if ((res < distmin) && (res != 0)) {
-					distmin = res;
-					node_prox = node1;
-					index = i;
-				}
+		double distmin = 33.33;
+		int index;
+		for (int i = 0; i < industrial.size(); i++) {
+			Vertex<NodeInf>* node1;
+			node1 = graph.getVertex(industrial[i].getId());
+			//cout << domestico[i].getId() << endl;
+			double res = calculateDistance(temp, node1);
+			if ((res < distmin) && (res != 0)) {
+				distmin = res;
+				node_prox = node1;
+				index = i;
 			}
+		}
 
+		graph.dijkstraShortestPath(temp->getInfo());
+		vector<NodeInf> v = graph.getPath(temp->getInfo(),
+				node_prox->getInfo());
+
+		for (unsigned int jj = 0; jj < v.size(); jj++) {
+			path.push_back(v[jj]);
+		}
+		temp = node_prox;
+
+		if (t == industrial.size() - 1) {
 			graph.dijkstraShortestPath(temp->getInfo());
-			vector<NodeInf> v = graph.getPath(temp->getInfo(),
-					node_prox->getInfo());
-
+			vector<NodeInf> v = graph.getPath(temp->getInfo(), dest->getInfo());
 			for (unsigned int jj = 0; jj < v.size(); jj++) {
 				path.push_back(v[jj]);
 			}
-			temp = node_prox;
 
-			if (t == industrial.size() - 1) {
-				graph.dijkstraShortestPath(temp->getInfo());
-				vector<NodeInf> v = graph.getPath(temp->getInfo(), dest->getInfo());
-				for (unsigned int jj = 0; jj < v.size(); jj++) {
-					path.push_back(v[jj]);
-				}
-
-			}
-			lixo.erase(lixo.begin() + index);
-			temp = node_prox;
 		}
+		lixo.erase(lixo.begin() + index);
+		temp = node_prox;
+	}
 	displayGraph(graph, path, industrial);
 
 }
-void computePath2Dest(vector<Bin>&lixo,
-		Vertex<NodeInf>*& source, Graph<NodeInf> &graph,
-		Vertex<NodeInf>* &dest,Vertex<NodeInf>* &dest2) {
+void computePath2Dest(vector<Bin>&lixo, Vertex<NodeInf>*& source,
+		Graph<NodeInf> &graph, Vertex<NodeInf>* &dest,
+		Vertex<NodeInf>* &dest2) {
 
 	Vertex<NodeInf>* temp = source;
 	Vertex<NodeInf>* node_prox;
@@ -383,13 +404,12 @@ void computePath2Dest(vector<Bin>&lixo,
 	path.clear();
 	temp = source;
 
-
 }
 
 vector<Bin> readBins(string filename) {
 	ifstream inFile;
 
-		inFile.open(filename.c_str());
+	inFile.open(filename.c_str());
 
 	if (!inFile) {
 		cerr << "Unable to open file node.txt";
@@ -430,7 +450,7 @@ vector<Bin> readBins(string filename) {
 }
 
 template<class T>
-void readNodes(Graph<T> &graph,string binfilename) {
+void readNodes(Graph<T> &graph, string binfilename) {
 
 	ifstream inFile;
 
