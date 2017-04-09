@@ -14,6 +14,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <map>
+#include "Bin.h"
+#include "Graph.h"
+#include "NodeInf.h"
+#include "graphviewer.h"
+#include "Road.h"
+#include "Position.h"
 
 using namespace std;
 
@@ -38,7 +44,7 @@ double calculateDistance(Vertex<NodeInf> *source, Vertex<NodeInf> *node1) {
 	return (abs(
 			2.0 * 6371.0 * asin(sqrt(u * u + cos(lat1) * cos(lat2) * v * v))));
 
-}
+};
 
 void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 		vector<Bin> lixo) {
@@ -126,7 +132,7 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 	cin.ignore(1000, '\n');
 	cin.clear();
 	cin.get();
-}
+};
 
 void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 	Graph<NodeInf> graph, Vertex<NodeInf>* dest, Vertex<NodeInf>* dest2) {
@@ -250,7 +256,7 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 
 	}
 
-}
+};
 void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
 	Graph<NodeInf> &graph, Vertex<NodeInf>* &dest) {
 	Vertex<NodeInf>* temp = source;
@@ -349,7 +355,7 @@ void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
 	}
 	displayGraph(graph, path, industrial);
 
-}
+};
 
 
 vector<Bin> readBins(string filename) {
@@ -393,7 +399,7 @@ vector<Bin> readBins(string filename) {
 
 	return contentor;
 
-}
+};
 
 template<class T>
 void readNodes(Graph<T> &graph, string binfilename) {
@@ -456,7 +462,7 @@ void readNodes(Graph<T> &graph, string binfilename) {
 
 	inFile.close();
 
-}
+};
 vector<Road> readStreets() {
 
 	ifstream inFile;
@@ -502,7 +508,7 @@ vector<Road> readStreets() {
 	inFile.close();
 	return roads;
 
-}
+};
 
 template<class T>
 void readEdges(Graph<T> &graph) {
@@ -568,6 +574,6 @@ void readEdges(Graph<T> &graph) {
 
 	inFile.close();
 
-}
+};
 
 #endif /* SRC_UTILITIES_H_ */
