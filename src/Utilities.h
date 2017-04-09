@@ -32,6 +32,12 @@ using namespace std;
 #define SOURCE_INDEX 15
 #define DEST_INDEX 5760
 
+/**
+ * Recebe 2 nós e calcula a distância de um ao outro a partir das coordenadas.
+ *
+ *@param source primeiro nó
+ *@param node1 segundo nó
+ */
 double calculateDistance(Vertex<NodeInf> *source, Vertex<NodeInf> *node1) {
 	double long1 = node1->getInfo().getCoordinate().getLongitude();
 	double long2 = source->getInfo().getCoordinate().getLongitude();
@@ -46,6 +52,12 @@ double calculateDistance(Vertex<NodeInf> *source, Vertex<NodeInf> *node1) {
 
 };
 
+/**
+ *	Usado para representar uma grafo recorrendo ao graphviewer e caminho calculado.
+ *
+ * @param graph Grafo a representar.
+ * @param path Caminho a pintar.
+ */
 void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 		vector<Bin> lixo) {
 	long int xmin = 999999999;
@@ -134,6 +146,17 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 	cin.get();
 };
 
+
+/**
+ * Calcula o caminho que os camião(ões) devem tomar de maneira visitar todos os caixotes, tomando o caminho mais curto póssivel.
+ *
+ *@param lixo Vector que guarda a localização dos caixotes de lixo.
+ *@param num  Capacidade de um camião.
+ *@param source Nó onde se localiza a garagem.
+ *@param graph Grafo pertinente ao problema.
+ *@param dest Nó onde se localiza o primeiro aterro.
+ *@param dest2 Nó onde se localiza o segundo aterro.
+ */
 void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 	Graph<NodeInf> graph, Vertex<NodeInf>* dest, Vertex<NodeInf>* dest2) {
 	Vertex<NodeInf>* temp = source;
@@ -257,6 +280,16 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 	}
 
 };
+
+/**
+ * Calcula o caminho que os camião(ões) devem tomar de maneira visitar todos os caixotes, tomando em conta
+ * o caminho mais curto póssivel e que o lixo pode ter vários tipos.
+ *
+ *@param lixo Vector que guarda a localização dos caixotes de lixo.
+ *@param source Nó onde se localiza a garagem.
+ *@param graph Grafo pertinente ao problema.
+ *@param dest Nó onde se localiza o primeiro aterro.
+ */
 void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
 	Graph<NodeInf> &graph, Vertex<NodeInf>* &dest) {
 	Vertex<NodeInf>* temp = source;
@@ -357,7 +390,11 @@ void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
 
 };
 
-
+/**
+ * Lê os caixotes do lixo existentes de um ficheiro.
+ *
+ * @param filename Nome do ficheiro.
+ */
 vector<Bin> readBins(string filename) {
 	ifstream inFile;
 
@@ -400,7 +437,12 @@ vector<Bin> readBins(string filename) {
 	return contentor;
 
 };
-
+/**
+ * Lê os nós existentes de um ficheiro.
+ *
+ * @param graph Grafo pertinente ao problema.
+ * @param filename Nome do ficheiro.
+ */
 template<class T>
 void readNodes(Graph<T> &graph, string binfilename) {
 
@@ -463,6 +505,11 @@ void readNodes(Graph<T> &graph, string binfilename) {
 	inFile.close();
 
 };
+
+/**
+ * Lê as ruas existentes de um ficheiro.
+ *
+ */
 vector<Road> readStreets() {
 
 	ifstream inFile;
@@ -510,6 +557,11 @@ vector<Road> readStreets() {
 
 };
 
+/**
+ * Lê as arestas existentes de um ficheiro.
+ *
+ * @param graph Grafo pertinente ao problema.
+ */
 template<class T>
 void readEdges(Graph<T> &graph) {
 

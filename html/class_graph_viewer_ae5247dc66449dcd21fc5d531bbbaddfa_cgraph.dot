@@ -1,0 +1,13 @@
+digraph "GraphViewer::createWindow"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node21 [label="GraphViewer::createWindow",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node21 -> Node22 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node22 [label="Connection::sendMsg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_connection.html#a4b9f6db1fb42fc9857f829fa0bc52e6e"];
+  Node22 -> Node23 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node23 [label="myerror",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$connection_8cpp.html#ac8b3411018d0e5416c08938b796177ab"];
+  Node22 -> Node24 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node24 [label="Connection::readLine",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_connection.html#a1df16b436751b686d96c24ca0c498659"];
+}

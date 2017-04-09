@@ -1,0 +1,6 @@
+<map id="calculateDistance" name="calculateDistance">
+<area shape="rect" id="node2" href="$class_vertex.html#a48eae2f7af2362634adab02b7b2dbec6" title="Vertex::getInfo" alt="" coords="202,5,309,32"/>
+<area shape="rect" id="node3" href="$class_node_inf.html#abfcd33f5dad64e6aa23fb071bad42c65" title="NodeInf::getCoordinate" alt="" coords="179,56,332,83"/>
+<area shape="rect" id="node4" href="$class_position.html#a0b0ee15a30ff13c4ff96a3cf1b916662" title="Position::getLongitude" alt="" coords="180,107,331,133"/>
+<area shape="rect" id="node5" href="$class_position.html#a6ed9bedcadd1f9a48465415364f05f72" title="Position::getLatitude" alt="" coords="185,157,326,184"/>
+</map>
