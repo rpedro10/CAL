@@ -13,6 +13,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <string.h>
+#include <map>
 
 using namespace std;
 
@@ -105,11 +106,6 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 
 	for (unsigned int i = 0; i < path.size(); i++) {
 		gv->setVertexColor(path[i].getId(), RED);
-
-		Vertex<NodeInf>* node1;
-		NodeInf nn(path[i].getId());
-		node1 = graph.getVertex(nn);
-
 	}
 
 	for (unsigned int i = 0; i < lixo.size(); i++) {
@@ -126,13 +122,14 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 			"landfill.png");
 
 	gv->rearrange();
+	cout<<"Premir Enter para continuar." <<endl;
 	cin.ignore(1000, '\n');
 	cin.clear();
 	cin.get();
 }
 
 void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
-		Graph<NodeInf> graph, Vertex<NodeInf>* dest, Vertex<NodeInf>* dest2) {
+	Graph<NodeInf> graph, Vertex<NodeInf>* dest, Vertex<NodeInf>* dest2) {
 	Vertex<NodeInf>* temp = source;
 	Vertex<NodeInf>* node_prox;
 	vector<Bin> bins_visited;
@@ -143,13 +140,13 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 		vector<NodeInf> path;
 		temp = source;
 		for (int j = 0; j < num; j++) {
-			cout << "size:" << lixo.size() << endl;
+			//cout << "size:" << lixo.size() << endl;
 			int index;
 			double distmin = 33.33;
-			for (int i = 0; i < lixo.size(); i++) {
+			for (unsigned int i = 0; i < lixo.size(); i++) {
 				Vertex<NodeInf>* node1;
 				node1 = graph.getVertex(lixo[i].getId());
-				cout << lixo[i].getId() << endl;
+				//cout << lixo[i].getId() << endl;
 				double res = calculateDistance(temp, node1);
 				if ((res < distmin) && (res != 0)) {
 					distmin = res;
@@ -168,19 +165,16 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 
 			if (j == (num - 1)) {
 				graph.dijkstraShortestPath(temp->getInfo());
-				//	vector<NodeInf> v = graph.getPath(temp->getInfo(),
-				//			dest2->getInfo());
-
+				vector<NodeInf> v;
 				double dist1 = calculateDistance(temp, dest);
 				double dist2 = calculateDistance(temp, dest2);
-				cout<<"distancias"<<dist1<<"---"<<dist2<<endl;
-				if (dist2 > dist1) {
-					vector<NodeInf> v = graph.getPath(temp->getInfo(),
-							dest2->getInfo());
+				if (dist1 < dist2) {
+					v = graph.getPath(temp->getInfo(),
+							dest->getInfo());
 				}
 				else {
-					vector<NodeInf> v = graph.getPath(temp->getInfo(),
-							dest->getInfo());
+					v = graph.getPath(temp->getInfo(),
+							dest2->getInfo());
 				}
 
 				for (unsigned int jj = 0; jj < v.size(); jj++) {
@@ -205,10 +199,10 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 
 		vector<NodeInf> path;
 		for (int j = 0; j < nIte; j++) {
-			cout << "size:" << lixo.size() << endl;
+			//cout << "size:" << lixo.size() << endl;
 			int index;
 			double distmin = 33.33;
-			for (int i = 0; i < lixo.size(); i++) {
+			for (unsigned int i = 0; i < lixo.size(); i++) {
 				Vertex<NodeInf>* node1;
 				node1 = graph.getVertex(lixo[i].getId());
 				double res = calculateDistance(temp, node1);
@@ -228,13 +222,14 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 			temp = node_prox;
 			if (j == (nIte - 1)) {
 				graph.dijkstraShortestPath(temp->getInfo());
+				vector<NodeInf> v;
 				double dist1 = calculateDistance(temp, dest);
 				double dist2 = calculateDistance(temp, dest2);
 				if (dist1 < dist2)
-					vector<NodeInf> v = graph.getPath(temp->getInfo(),
+					v = graph.getPath(temp->getInfo(),
 							dest->getInfo());
 				else
-					vector<NodeInf> v = graph.getPath(temp->getInfo(),
+					v = graph.getPath(temp->getInfo(),
 							dest2->getInfo());
 
 				for (unsigned int jj = 0; jj < v.size(); jj++) {
@@ -257,13 +252,14 @@ void computePath(vector<Bin>&lixo, int num, Vertex<NodeInf>* source,
 
 }
 void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
-		Graph<NodeInf> &graph, Vertex<NodeInf>* &dest) {
+	Graph<NodeInf> &graph, Vertex<NodeInf>* &dest) {
 	Vertex<NodeInf>* temp = source;
 	Vertex<NodeInf>* node_prox;
-	cout << "here";
+
 
 	vector<Bin> industrial;
 	vector<Bin> domestico;
+
 
 	for (unsigned int p = 0; p < lixo.size(); p++) {
 		if (lixo[p].getType() == "industrial") {
@@ -271,7 +267,7 @@ void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
 		} else
 			domestico.push_back(lixo[p]);
 	}
-	cout << domestico.size();
+	//cout << domestico.size();
 
 	vector<NodeInf> path;
 	temp = source;
@@ -279,10 +275,10 @@ void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
 	for (unsigned t = 0; t < domestico.size(); t++) {
 		double distmin = 33.33;
 		int index;
-		for (int i = 0; i < domestico.size(); i++) {
+		for (unsigned int i = 0; i < domestico.size(); i++) {
 			Vertex<NodeInf>* node1;
 			node1 = graph.getVertex(domestico[i].getId());
-			cout << domestico[i].getId() << endl;
+			//cout << domestico[i].getId() << endl;
 			double res = calculateDistance(temp, node1);
 			if ((res < distmin) && (res != 0)) {
 				distmin = res;
@@ -319,7 +315,7 @@ void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
 	for (unsigned t = 0; t < industrial.size(); t++) {
 		double distmin = 33.33;
 		int index;
-		for (int i = 0; i < industrial.size(); i++) {
+		for (unsigned int i = 0; i < industrial.size(); i++) {
 			Vertex<NodeInf>* node1;
 			node1 = graph.getVertex(industrial[i].getId());
 			//cout << domestico[i].getId() << endl;
@@ -354,57 +350,7 @@ void computePathDifferentTypes(vector<Bin>&lixo, Vertex<NodeInf>*& source,
 	displayGraph(graph, path, industrial);
 
 }
-void computePath2Dest(vector<Bin>&lixo, Vertex<NodeInf>*& source,
-		Graph<NodeInf> &graph, Vertex<NodeInf>* &dest,
-		Vertex<NodeInf>* &dest2) {
 
-	Vertex<NodeInf>* temp = source;
-	Vertex<NodeInf>* node_prox;
-
-	vector<NodeInf> path;
-	temp = source;
-
-	for (unsigned t = 0; t < lixo.size(); t++) {
-		double distmin = 33.33;
-		int index;
-		for (int i = 0; i < lixo.size(); i++) {
-			Vertex<NodeInf>* node1;
-			node1 = graph.getVertex(lixo[i].getId());
-			cout << lixo[i].getId() << endl;
-			double res = calculateDistance(temp, node1);
-			if ((res < distmin) && (res != 0)) {
-				distmin = res;
-				node_prox = node1;
-				index = i;
-			}
-		}
-
-		graph.dijkstraShortestPath(temp->getInfo());
-		vector<NodeInf> v = graph.getPath(temp->getInfo(),
-				node_prox->getInfo());
-
-		for (unsigned int jj = 0; jj < v.size(); jj++) {
-			path.push_back(v[jj]);
-		}
-		temp = node_prox;
-
-		if (t == lixo.size() - 1) {
-			graph.dijkstraShortestPath(temp->getInfo());
-			vector<NodeInf> v = graph.getPath(temp->getInfo(), dest->getInfo());
-			for (unsigned int jj = 0; jj < v.size(); jj++) {
-				path.push_back(v[jj]);
-			}
-
-		}
-		lixo.erase(lixo.begin() + index);
-		temp = node_prox;
-	}
-
-	displayGraph(graph, path, lixo);
-	path.clear();
-	temp = source;
-
-}
 
 vector<Bin> readBins(string filename) {
 	ifstream inFile;
@@ -432,7 +378,7 @@ vector<Bin> readBins(string filename) {
 		type = line.substr(0, line.find(";"));
 
 		bool found = false;
-		for (int i = 0; i < contentor.size(); i++) {
+		for (unsigned int i = 0; i < contentor.size(); i++) {
 			if (node_id == contentor[i].getId()) {
 				found = true;
 			}
