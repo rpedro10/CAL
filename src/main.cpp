@@ -1,5 +1,5 @@
 #include "Utilities.h"
-
+#include "Search.h"
 
 #include <fstream>
 #include <sstream>
@@ -13,13 +13,20 @@
 
 using namespace std;
 
+
+
+
 int main() {
+
+
 	Graph<NodeInf> graph;
 
 	int num;
 	int opt;
 	cout << "1. Lixo do mesmo tipo " << "contentores cheios" << endl;
 	cout << "2. Lixo de Tipos diferentes " << endl;
+	cout << "3. Parte 2 " << endl;
+
 	cin >> opt;
 	if (opt == 1) {
 		vector<Bin> lixo = readBins("bin.txt");
@@ -44,6 +51,33 @@ int main() {
 		cout << "Existem " << lixo.size() << " contentores cheios." << endl;
 		computePathDifferentTypes(lixo, source, graph, dest);
 	}
+	if (opt == 3) {
+				vector<Bin> lixo = readBins("bin.txt");
+
+				readNodes(graph, "bin.txt");
+				vector<Aresta> arestas = readEdges(graph);
+
+				vector<Road> streets= readStreets();
+				string s1;
+				string s2;
+				cin.ignore(1000,'\n');
+				cin.clear();
+				getline(cin,s1);
+				getline(cin,s2);
+				Search ss (s1,s2,streets,arestas,lixo);
+				if(ss.hasDumpster()){
+					cout<<"Existe contentor"<<endl;
+				}
+				else
+					cout<<"nao existe contentor no cruzamento"<<endl;
+				//cout<<ss.KMP(s1,s2);
+
+
+	}
+
+	//Avenida da Associação Empresarial de Portugal
 
 	return 0;
+
 }
+

@@ -1,5 +1,5 @@
 /*
- * Parser.h
+ * Utilities.h
  *
  *  Created on: 07/04/2017
  *      Author: rpedr
@@ -7,19 +7,21 @@
 
 #ifndef SRC_UTILITIES_H_
 #define SRC_UTILITIES_H_
-#include "Utilities.h"
 
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
 #include <string.h>
 #include <map>
+
+#include "Aresta.h"
 #include "Bin.h"
 #include "Graph.h"
 #include "NodeInf.h"
 #include "graphviewer.h"
 #include "Road.h"
 #include "Position.h"
+
 
 using namespace std;
 
@@ -104,8 +106,10 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 		long long idPrint = graph.getVertexSet()[i]->getInfo().getId();
 		stringstream idV;
 		idV << idPrint;
-
-		gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(), "-"); //idV.str()
+		//25632467;geral;
+		// 137994720;geral;
+		//  idV.str()
+		gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(),"-");
 
 	}
 
@@ -119,6 +123,8 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 			edgeID++;
 			//add road names, not advised.
 			//gv->setEdgeLabel(k, graph->vertexSet[i]->adj[j]->getRoad()->getName());
+
+
 		}
 	}
 
@@ -443,6 +449,8 @@ vector<Bin> readBins(string filename) {
  * @param graph Grafo pertinente ao problema.
  * @param filename Nome do ficheiro.
  */
+
+
 template<class T>
 void readNodes(Graph<T> &graph, string binfilename) {
 
@@ -510,6 +518,7 @@ void readNodes(Graph<T> &graph, string binfilename) {
  * Lê as ruas existentes de um ficheiro.
  *
  */
+
 vector<Road> readStreets() {
 
 	ifstream inFile;
@@ -538,8 +547,7 @@ vector<Road> readStreets() {
 		line = line.substr(line.find(";") + 1, string::npos);
 		string both = line.substr(0, line.find(";") - 1);					//
 
-		/*cout << "id: " << id << " name:" << nome << " both:" << both
-		 << endl;*/
+
 		bool both_ways;
 
 		if (both == "False")
@@ -557,15 +565,18 @@ vector<Road> readStreets() {
 
 };
 
+
+
 /**
  * Lê as arestas existentes de um ficheiro.
  *
  * @param graph Grafo pertinente ao problema.
  */
 template<class T>
-void readEdges(Graph<T> &graph) {
+vector<Aresta> readEdges(Graph<T> &graph) {
 
 	ifstream inFile;
+	vector<Aresta> res;
 
 	//Ler o ficheiro nos.txt
 	inFile.open(EDGES_FILE);
@@ -596,6 +607,10 @@ void readEdges(Graph<T> &graph) {
 		getline(linestream, data, ';');
 		linestream >> dest_id;
 
+		Aresta aresta= Aresta(street_id,source_id,dest_id);
+
+		res.push_back(aresta);
+
 		//cout << "id: " << street_id <<endl; //<< " source: " << source_id << " destiny: "
 		//<< dest_id << endl;
 
@@ -623,9 +638,8 @@ void readEdges(Graph<T> &graph) {
 		}
 
 	}
-
+	return res;
 	inFile.close();
 
 };
-
 #endif /* SRC_UTILITIES_H_ */
