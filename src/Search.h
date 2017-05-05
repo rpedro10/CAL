@@ -23,26 +23,28 @@
 #include "Position.h"
 using namespace std;
 
+
+// dar uma rua e verificar se algum dos contentores encontrados nessa rua é contentor
+
+
 class Search {
 
 	string street1;
-	string street2;
 	vector<Road>roads;
 	vector<Aresta>arestas;
 	vector<Bin>bins;
 
 public:
 
-	Search(string st1,string st2, vector<Road>roads,vector<Aresta>ar,vector<Bin>bins);
+	Search(string st1, vector<Road>roads,vector<Aresta>ar,vector<Bin>bins);
 	bool KMP(string pattern, string target);
 	void preKMP(string pattern, int f[]);
 	const vector<Road>& getRoads() const;
 	const string& getStreet1() const;
-	const string& getStreet2() const;
 	bool isDumpster(long long id);
-
-	int findRoad(string name);
+	vector<Road> findRoad();
 	bool hasDumpster();
+	unsigned int editDistance( string &pattern, string &text);
 
 
 };

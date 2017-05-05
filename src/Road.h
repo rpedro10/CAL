@@ -36,6 +36,7 @@ public:
 	 * @param b_ways verdadeiro se a rua tem dois sentidos
 	 */
 	Road(long long _id,string _name,bool b_ways);
+
 	/**
 	 * Verdadeiro caso a rua apresente dois sentidos.
 	 */

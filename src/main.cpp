@@ -63,14 +63,15 @@ int main() {
 				cin.ignore(1000,'\n');
 				cin.clear();
 				getline(cin,s1);
-				getline(cin,s2);
-				Search ss (s1,s2,streets,arestas,lixo);
+				Search ss (s1,streets,arestas,lixo);
+		//		cout<<ss.KMP("Dinis","Rua Dinis");
+
 				if(ss.hasDumpster()){
 					cout<<"Existe contentor"<<endl;
 				}
-				else
-					cout<<"nao existe contentor no cruzamento"<<endl;
-				//cout<<ss.KMP(s1,s2);
+				//else
+				//	cout<<"nao existe contentor na rua dada"<<endl;
+			//	cout<<ss.KMP("Dinis","Dinis");
 
 
 	}
