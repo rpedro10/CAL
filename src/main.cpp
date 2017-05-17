@@ -10,25 +10,20 @@
 #define DEST_INDEX 5760
 #define DEST2_INDEX 2597
 
-
 using namespace std;
 
-
-
-
 int main() {
-
 
 	Graph<NodeInf> graph;
 
 	int num;
-	int opt;
+	string opt;
 	cout << "1. Lixo do mesmo tipo " << "contentores cheios" << endl;
 	cout << "2. Lixo de Tipos diferentes " << endl;
 	cout << "3. Parte 2 " << endl;
 
-	cin >> opt;
-	if (opt == 1) {
+	getline(cin, opt);
+	if (opt =="1") {
 		vector<Bin> lixo = readBins("bin.txt");
 		cout << "Existem " << lixo.size() << " contentores cheios." << endl;
 		cout << "Capacidade do camiao (em contentores)?";
@@ -40,9 +35,9 @@ int main() {
 		Vertex<NodeInf>* dest = graph.getVertexSet()[DEST_INDEX];
 		Vertex<NodeInf>* dest2 = graph.getVertexSet()[DEST2_INDEX];
 
-		computePath(lixo, num, source, graph, dest,dest2);
+		computePath(lixo, num, source, graph, dest, dest2);
 	}
-	if (opt == 2) {
+	if (opt == "2") {
 		readNodes(graph, "type_bins.txt");
 		readEdges(graph);
 		vector<Bin> lixo = readBins("type_bins.txt");
@@ -51,28 +46,30 @@ int main() {
 		cout << "Existem " << lixo.size() << " contentores cheios." << endl;
 		computePathDifferentTypes(lixo, source, graph, dest);
 	}
-	if (opt == 3) {
-				vector<Bin> lixo = readBins("bin.txt");
+	if (opt == "3") {
+		vector<Bin> lixo = readBins("bin.txt");
 
-				readNodes(graph, "bin.txt");
-				vector<Aresta> arestas = readEdges(graph);
+		readNodes(graph, "bin.txt");
+		vector<Aresta> arestas = readEdges(graph);
 
-				vector<Road> streets= readStreets();
-				string s1;
-				string s2;
-				cin.ignore(1000,'\n');
-				cin.clear();
-				getline(cin,s1);
-				Search ss (s1,streets,arestas,lixo);
-		//		cout<<ss.KMP("Dinis","Rua Dinis");
+		vector<Road> streets = readStreets();
+		string s1;
+		string s2;
 
-				if(ss.hasDumpster()){
-					cout<<"Existe contentor"<<endl;
-				}
-				//else
-				//	cout<<"nao existe contentor na rua dada"<<endl;
-			//	cout<<ss.KMP("Dinis","Dinis");
+		cout << "String a pesquisar?" << endl;
 
+		getline(cin, s1);
+
+		while (s1 != "0") {
+			Search ss(s1, streets, arestas, lixo);
+			if (!ss.hasDumpster()) {
+				cout << "Nao Existe contentor" << endl;
+			}
+			cout<<endl;
+			cout << "0 para terminar programa" << endl;
+			cout << "String a pesquisar?" << endl;
+			getline(cin, s1);
+		}
 
 	}
 

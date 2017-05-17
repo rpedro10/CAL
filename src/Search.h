@@ -42,9 +42,11 @@ public:
 	const vector<Road>& getRoads() const;
 	const string& getStreet1() const;
 	bool isDumpster(long long id);
-	vector<Road> findRoad();
+	vector<long long> findRoad();
 	bool hasDumpster();
 	unsigned int editDistance( string &pattern, string &text);
+	vector<long long> aproxSearch();
+	Road getRoad(long long edge_id);
 
 
 };
