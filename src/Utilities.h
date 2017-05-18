@@ -108,7 +108,7 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 		idV << idPrint;
 		//25632467;geral;
 		// 137994720;geral;
-		//  idV.str()
+		//
 		gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(),"-");
 
 	}
@@ -136,7 +136,8 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 
 		gv->setVertexColor(lixo[i].getId(), GREEN);
 		gv->setVertexIcon(lixo[i].getId(), "bin.png");
-		gv->setVertexLabel(lixo[i].getId(), lixo[i].getType());
+		//gv->setVertexLabel(lixo[i].getId(), lixo[i].getType());
+
 	}
 	gv->setVertexIcon(graph.getVertexSet()[SOURCE_INDEX]->getInfo().getId(),
 			"truck.png");
@@ -150,6 +151,121 @@ void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
 	cin.ignore(1000, '\n');
 	cin.clear();
 	cin.get();
+};
+
+int getEdgeId(vector<Aresta> arestas, long long source, long long dest){
+
+	for (unsigned int i=0; i<arestas.size();i++){
+		if(arestas[i].getDestId()==dest && source ==arestas[i].getSourceId() ){
+			return i;
+		}
+	}
+};
+
+void displayGraph(Graph<NodeInf> &graph, vector<NodeInf> &path,
+		vector<Bin> lixo,vector<Aresta> arestas,vector<Road> streets) {
+	long int xmin = 999999999;
+	long int xmax = -99999999;
+	long int ymin = 999999999;
+	long int ymax = -1;
+
+	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
+		double lat =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
+		double lon =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
+		int x, y;
+		x = -6370000 * cos(lat) * sin(lon);
+		y = 6370000 * sin(lat);
+
+		if (x > xmax)
+			xmax = x;
+		if (x < xmin)
+			xmin = x;
+		if (y > ymax)
+			ymax = y;
+		if (y < ymin)
+			ymin = y;
+	}
+	GraphViewer *gv = new GraphViewer(xmax - xmin, ymax - ymin, false);
+	gv->createWindow(xmax - xmin, ymax - ymin);
+	gv->defineEdgeColor("blue");
+	gv->defineVertexColor("yellow");
+	gv->setBackground("map.png");
+
+	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
+
+		double lat =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLatitude();
+		double lon =
+				graph.getVertexSet()[i]->getInfo().getCoordinate().getLongitude();
+		int x, y;
+		x = -6370000 * cos(lat) * sin(lon);
+		y = 6370000 * sin(lat);
+
+		gv->addNode(graph.getVertexSet()[i]->getInfo().getId(),
+				round((x - xmin) * 0.5), round((y - ymin) * 0.5));
+		long long idPrint = graph.getVertexSet()[i]->getInfo().getId();
+		stringstream idV;
+		idV << idPrint;
+		gv->setVertexLabel(graph.getVertexSet()[i]->getInfo().getId(),"-");
+
+
+	}
+
+
+
+	int edgeID = 0;
+	for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
+		for (unsigned int j = 0; j < graph.getVertexSet()[i]->getAdj().size();
+				j++) {
+			gv->addEdge(edgeID, graph.getVertexSet()[i]->getInfo().getId(),
+					graph.getVertexSet()[i]->getAdj()[j].getDest()->getInfo().getId(),
+					EdgeType::UNDIRECTED);
+			edgeID++;
+			//add road names, not advised.
+			//gv->setEdgeLabel(k, graph->vertexSet[i]->adj[j]->getRoad()->getName());
+
+
+		}
+	}
+
+
+
+
+for (unsigned int i = 0; i < graph.getVertexSet().size(); i++) {
+		for (unsigned int j = 0; j < graph.getVertexSet()[i]->getAdj().size();
+				j++) {
+			int ss;
+					ss=getEdgeId(arestas,graph.getVertexSet()[i]->getInfo().getId()	,graph.getVertexSet()[i]->getAdj()[j].getDest()->getInfo().getId());
+					string name;
+					for(unsigned int k=0; k<streets.size();k++){
+						if(streets[k].getId()== arestas[ss].getEdgeId()){
+							name = streets[k].getName();
+
+						}
+					}
+
+					gv->setEdgeLabel(ss,name);
+			}
+
+		}
+
+
+
+	for (unsigned int i = 0; i < lixo.size(); i++) {
+
+		gv->setVertexColor(lixo[i].getId(), GREEN);
+		gv->setVertexIcon(lixo[i].getId(), "bin.png");
+
+	}
+
+	gv->rearrange();
+		cout<<"Premir Enter para continuar." <<endl;
+		cin.ignore(1000, '\n');
+		cin.clear();
+		cin.get();
+
 };
 
 

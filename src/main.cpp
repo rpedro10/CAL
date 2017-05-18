@@ -23,7 +23,7 @@ int main() {
 	cout << "3. Parte 2 " << endl;
 
 	getline(cin, opt);
-	if (opt =="1") {
+	if (opt == "1") {
 		vector<Bin> lixo = readBins("bin.txt");
 		cout << "Existem " << lixo.size() << " contentores cheios." << endl;
 		cout << "Capacidade do camiao (em contentores)?";
@@ -60,15 +60,13 @@ int main() {
 
 		getline(cin, s1);
 
-		while (s1 != "0") {
-			Search ss(s1, streets, arestas, lixo);
-			if (!ss.hasDumpster()) {
-				cout << "Nao Existe contentor" << endl;
-			}
-			cout<<endl;
-			cout << "0 para terminar programa" << endl;
-			cout << "String a pesquisar?" << endl;
-			getline(cin, s1);
+		Search ss(s1, streets, arestas, lixo);
+		vector<Bin> found = ss.hasDumpster();
+		if (found.size() == 0) {
+			cout << "Nao Existe contentor" << endl;
+		} else {
+			vector<NodeInf> path;
+			displayGraph(graph, path, found);
 		}
 
 	}

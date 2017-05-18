@@ -103,12 +103,13 @@ vector<long long> Search::findRoad() {
 			//return roads[i].getId();
 		}
 	}
-	if(roads_found.size()>0){
-	cout<<"Ruas encontradas com a Pesquisa Exata:"<<endl<<"-----------------------"<<endl;
-		for(unsigned int i=0;i<roads_found.size();i++){
-			cout<<roads_found[i].getName()<<endl;
+	if (roads_found.size() > 0) {
+		cout << "Ruas encontradas com a Pesquisa Exata:" << endl
+				<< "-----------------------" << endl;
+		for (unsigned int i = 0; i < roads_found.size(); i++) {
+			cout << roads_found[i].getName() << endl;
 		}
-		cout<<"---------------------"<<endl;
+		cout << "---------------------" << endl;
 	}
 	return street_ids;
 }
@@ -117,7 +118,7 @@ vector<long long> Search::aproxSearch() {
 
 	vector<long long> street_ids;
 
-	vector<pair<string,int>> roads_found;
+	vector<pair<string, int>> roads_found;
 	string found_aprox;
 
 	for (unsigned int i = 0; i < roads.size(); i++) {
@@ -128,52 +129,65 @@ vector<long long> Search::aproxSearch() {
 			string optStr = temp.substr(0, temp.find(" "));
 			temp = temp.substr(temp.find(" ") + 1, string::npos);
 			//	cout << optStr << endl;
-			if (optStr != "de" && optStr != "do" && optStr != "da") {
-				if (editDistance(street1, optStr) < min) {
-					min = editDistance(street1, optStr);
+			for (unsigned int k = 0; k < 3; k++) {
+				string ss = street1.substr(0, street1.find(" "));
+				street1 = street1.substr(street1.find(" ") + 1, string::npos);
+				if (optStr != "de" && optStr != "do" && optStr != "da"
+						&& optStr != "Rua" && optStr != "dos" && optStr != "das"
+						&& optStr != "e") {
+					if (editDistance(ss, optStr) < min) {
+						min = editDistance(street1, optStr);
 
+					}
 				}
+
 			}
+
 		}
 		//cout << min << endl;
 		if (min <= 4) {
 			bool found = false;
 			street_ids.push_back(roads[i].getId());
 			for (int k = 0; k < roads_found.size(); k++) {
-				string ss=roads_found[k].first;
+				string ss = roads_found[k].first;
 				if (roads[i].getName() == ss) {
 					found = true;
 				}
 			}
 			if (!found) {
 				//Road rr(roads[i].getId(), roads[i].getName(), true);
-				string name=roads[i].getName();
-				roads_found.push_back(make_pair(name,min));
+				string name = roads[i].getName();
+				roads_found.push_back(make_pair(name, min));
 				//cout << roads[i].getName() << endl;
 			}
 		}
 
 	}
-	sort(roads_found.begin(), roads_found.end(), [](const std::pair<string,int> &left, const std::pair<string,int> &right) {
-	    return left.second < right.second;
-	});
+	sort(roads_found.begin(), roads_found.end(),
+			[](const std::pair<string,int> &left, const std::pair<string,int> &right) {
+				return right.second < left.second;
+			});
 
-	cout<<"Ruas encontradas com a Pesquisa Aproximada:"<<endl<<"-----------------------"<<endl;
-	for(unsigned int i=0;i<roads_found.size();i++){
-		cout<<roads_found[i].first<< " -- dist:"<<roads_found[i].second<<endl;
+	cout << "Ruas encontradas com a Pesquisa Aproximada:" << endl
+			<< "-----------------------" << endl;
+	for (unsigned int i = 0; i < roads_found.size(); i++) {
+		cout << roads_found[i].first << " -- dist:" << roads_found[i].second
+				<< endl;
 
 	}
-	cout<<endl;
-
+	cout << endl;
 
 	return street_ids;
 }
 
-bool Search::hasDumpster() { //TODO dizer em que rua o contentor foi encontrado (no caso de "Dinis" existem 5 ruas diferentes)
+vector<Bin> Search::hasDumpster() { //TODO dizer em que rua o contentor foi encontrado (no caso de "Dinis" existem 5 ruas diferentes)
 	vector<long long> streets = findRoad();
 
+	vector<Bin> contentores;
+
 	if (streets.size() == 0) {
-		cout << "---------------------"<<endl<<"Pesquisa exata falhou com: " << street1 << endl<<"----------------"<<endl;
+		cout << "---------------------" << endl << "Pesquisa exata falhou com: "
+				<< street1 << endl << "----------------" << endl;
 
 		streets = aproxSearch();
 
@@ -183,29 +197,40 @@ bool Search::hasDumpster() { //TODO dizer em que rua o contentor foi encontrado 
 
 		if (streets.size() == 0) {
 			cout << "Pesquisa aproximada falhou !!(<5)" << endl;
-			return false;
+			return contentores;
 		}
 
 	}
-	bool found =false;
+	bool found = false;
 
 	//cout << "existem x Edge-ids : " << streets.size() << endl;
 
 	for (unsigned int i = 0; i < arestas.size(); i++) {
 		for (unsigned int j = 0; j < streets.size(); j++) {
-			if ((streets[j] == arestas[i].getEdgeId())
-					&& (isDumpster(arestas[i].getSourceId()) == true
-							|| isDumpster(arestas[i].getDestId() == true))) {
+			if (streets[j] == arestas[i].getEdgeId()
+					&& isDumpster(arestas[i].getSourceId()) == true) {
 				Road rr = getRoad(arestas[i].getEdgeId());
-				cout << "Foi encontrado: " << rr.getName()
+				cout << "Foi encontrado: " << rr.getName() << endl;
+				cout << "Aresta com id:" << arestas[i].getEdgeId() << endl
 						<< endl;
-				cout << "Aresta com id:" << arestas[i].getEdgeId() << endl<<endl;
-				found =true;
+				found = true;
+				Bin bb(arestas[i].getSourceId(), "geral");
+				contentores.push_back(bb);
 				//return true;
+			} else if (streets[j] == arestas[i].getEdgeId()
+					&& isDumpster(arestas[i].getDestId()) == true) {
+				Road rr = getRoad(arestas[i].getEdgeId());
+				cout << "Foi encontrado: " << rr.getName() << endl;
+				cout << "Aresta com id:" << arestas[i].getEdgeId() << endl
+						<< endl;
+				found = true;
+				Bin bb(arestas[i].getDestId(), "geral");
+				contentores.push_back(bb);
+
 			}
 		}
 	}
-	return found;
+	return contentores;
 
 }
 
