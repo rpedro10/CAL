@@ -68,7 +68,7 @@ bool Search::isDumpster(long long id) {
 
 	for (unsigned int j = 0; j < bins.size(); j++) {
 		if (id == bins[j].getId()) {
-			cout << "ID Contentor:" << bins[j].getId() << endl;
+
 			return true;
 
 		}
@@ -209,23 +209,46 @@ vector<Bin> Search::hasDumpster() { //TODO dizer em que rua o contentor foi enco
 		for (unsigned int j = 0; j < streets.size(); j++) {
 			if (streets[j] == arestas[i].getEdgeId()
 					&& isDumpster(arestas[i].getSourceId()) == true) {
-				Road rr = getRoad(arestas[i].getEdgeId());
-				cout << "Foi encontrado: " << rr.getName() << endl;
-				cout << "Aresta com id:" << arestas[i].getEdgeId() << endl
-						<< endl;
-				found = true;
-				Bin bb(arestas[i].getSourceId(), "geral");
-				contentores.push_back(bb);
+
+				bool existingBin = false;
+				for (int w = 0; w < contentores.size(); w++) {
+
+					if (contentores[w].getId() == arestas[i].getSourceId())
+					{
+						existingBin = true;
+					}
+				}
+				if (existingBin == false) {
+					cout << "ID Contentor:" << arestas[i].getSourceId() << endl;
+					Road rr = getRoad(arestas[i].getEdgeId());
+					cout << "Foi encontrado: " << rr.getName() << endl;
+					cout << "Aresta com id:" << arestas[i].getEdgeId() << endl
+							<< endl;
+					found = true;
+
+					Bin bb(arestas[i].getSourceId(), "geral");
+					contentores.push_back(bb);
+				}
 				//return true;
 			} else if (streets[j] == arestas[i].getEdgeId()
 					&& isDumpster(arestas[i].getDestId()) == true) {
-				Road rr = getRoad(arestas[i].getEdgeId());
-				cout << "Foi encontrado: " << rr.getName() << endl;
-				cout << "Aresta com id:" << arestas[i].getEdgeId() << endl
-						<< endl;
-				found = true;
-				Bin bb(arestas[i].getDestId(), "geral");
-				contentores.push_back(bb);
+
+				bool existingBin = false;
+				for (int w = 0; w < contentores.size(); w++) {
+					if (contentores[w].getId() == arestas[i].getDestId())
+						existingBin = true;
+				}
+				if (existingBin == false) {
+					cout << "ID Contentor:" << arestas[i].getDestId() << endl;
+					Road rr = getRoad(arestas[i].getEdgeId());
+					cout << "Foi encontrado: " << rr.getName() << endl;
+					cout << "Aresta com id:" << arestas[i].getEdgeId() << endl
+							<< endl;
+
+					found = true;
+					Bin bb(arestas[i].getDestId(), "geral");
+					contentores.push_back(bb);
+				}
 
 			}
 		}
